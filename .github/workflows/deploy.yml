@@ -20,17 +20,14 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-          cache-dependency-path: cassiopeia/package-lock.json
       - name: Install dependencies
         run: npm install
-        working-directory: cassiopeia
       - name: Build
         run: npm run build
-        working-directory: cassiopeia
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: cassiopeia/dist
+          path: dist
 
   deploy:
     environment:
