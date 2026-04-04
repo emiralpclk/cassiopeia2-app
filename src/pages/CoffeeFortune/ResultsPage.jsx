@@ -171,8 +171,8 @@ function ResultsPage() {
 
     setTabLoading((prev) => ({ ...prev, [tabId]: false }));
 
-    // AFTER LOAD: Start the 10s cinematic bridge timer if we just loaded details
-    if (tabId === 'details') {
+    // AFTER LOAD: Start the 10s cinematic bridge timer if we just loaded details AND it's not already ready
+    if (tabId === 'details' && detailsRevealStep !== 'ready') {
       setTimeout(() => {
         setDetailsRevealStep('ready');
       }, 10000);
@@ -307,11 +307,8 @@ Kısa ve öz yanıt ver. Türkçe. Markdown kullanma.`;
     }
 
     if (activeTab === 'details') {
-      if (tabLoading.details) {
-        return <OracleLoading message="Derin detaylara iniliyor..." />;
-      }
-      
-      if (detailsRevealStep === 'shuffling') {
+      // Show ritual only if not already 'ready' and (currently loading OR shuffling timer active)
+      if (detailsRevealStep === 'shuffling' || tabLoading.details) {
         return (
           <div className="stagger-item shamanic-bridge">
             <span className="material-symbols-outlined bridge-icon">insights</span>
