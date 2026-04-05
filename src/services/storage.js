@@ -73,13 +73,19 @@ export function setOnboardingDone() {
   try { localStorage.setItem(KEYS.ONBOARDING_DONE, 'true'); } catch {}
 }
 
-// Test Mode (Mock API) - Disabled for production
+// Test Mode (Mock API) - Environment aware
 export function getTestMode() {
-  return false; // Force false for production
+  // Always false in production for safety
+  if (import.meta.env.PROD) return false;
+  
+  try { return localStorage.getItem(KEYS.TEST_MODE) === 'true'; } catch { return false; }
 }
 
 export function setTestMode(val) {
-  // No-op for production to prevent accidental toggling
+  // No-op in production
+  if (import.meta.env.PROD) return;
+  
+  try { localStorage.setItem(KEYS.TEST_MODE, val ? 'true' : 'false'); } catch {}
 }
 
 // Async Storage for History and Current Fortune 

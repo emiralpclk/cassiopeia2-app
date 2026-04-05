@@ -84,7 +84,46 @@ export default function ProfilePage() {
         </button>
       </div>
 
-
+      {/* Developer Settings (Only in Dev environment) */}
+      {import.meta.env.DEV && (
+        <div className="profile-section developer-section">
+          <h3 className="section-title">Geliştirici Ayarları</h3>
+          <div className="settings-item-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', marginBottom: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span className="material-symbols-outlined" style={{ color: 'var(--accent)' }}>bug_report</span>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ fontSize: '15px' }}>Test Modu (Ücretsiz Fal)</span>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>API çağırmaz, sahte veri kullanır.</span>
+              </div>
+            </div>
+            <button 
+              className={`toggle-switch ${isTestMode ? 'active' : ''}`}
+              onClick={() => dispatch({ type: 'TOGGLE_TEST_MODE' })}
+              style={{
+                width: '44px',
+                height: '24px',
+                borderRadius: '12px',
+                background: isTestMode ? 'var(--accent)' : 'rgba(255,255,255,0.1)',
+                position: 'relative',
+                transition: 'all 0.3s ease',
+                border: 'none',
+                cursor: 'pointer'
+              }}
+            >
+              <div style={{
+                width: '18px',
+                height: '18px',
+                borderRadius: '50%',
+                background: '#fff',
+                position: 'absolute',
+                top: '3px',
+                left: isTestMode ? '23px' : '3px',
+                transition: 'all 0.3s ease'
+              }} />
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="profile-footer">
         <p>Cassiopeia v1.0</p>

@@ -31,7 +31,7 @@ const initialState = {
   isLoading: false,
   isHydrating: true, // App starts in hydrating state
   showWelcome: true, // Show splash screen on first mount
-  isTestMode: false, // Force false for production
+  isTestMode: getTestMode(), // Auto-detected from storage & environment
   error: null,
 };
 
@@ -62,6 +62,13 @@ function appReducer(state, action) {
 
     case 'TOGGLE_API_KEY_MODAL':
       return { ...state, showApiKeyModal: !state.showApiKeyModal };
+
+    case 'TOGGLE_TEST_MODE':
+      // Safety: Only allowed in development
+      if (import.meta.env.PROD) return state;
+      const nextTestMode = !state.isTestMode;
+      setTestMode(nextTestMode);
+      return { ...state, isTestMode: nextTestMode };
 
 
 
