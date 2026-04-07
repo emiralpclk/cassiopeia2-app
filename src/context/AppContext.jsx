@@ -1,12 +1,32 @@
 import { createContext, useContext, useReducer, useEffect } from 'react';
-import { getApiKey, getUserProfile, getHistory, setApiKey as saveApiKey, setUserProfile, addToHistory as saveToHistory, saveCurrentFortune, getCurrentFortune, clearCurrentFortune, migrateStorage, clearHistory, setTestMode, getTestMode } from '../services/storage';
+import { 
+  getApiKey, 
+  getUserProfile, 
+  getHistory, 
+  setApiKey as saveApiKey, 
+  addToHistory as saveToHistory, 
+  saveCurrentFortune, 
+  getCurrentFortune, 
+  clearCurrentFortune, 
+  migrateStorage, 
+  clearHistory, 
+  setTestMode, 
+  getTestMode,
+  getProfiles,
+  setProfiles as saveProfiles,
+  getActiveProfileId,
+  setActiveProfileId as saveActiveId
+} from '../services/storage';
 
 const AppContext = createContext(null);
 const AppDispatchContext = createContext(null);
 
 const initialState = {
   apiKey: getApiKey(),
-  user: getUserProfile(), 
+  profiles: getProfiles(),
+  activeProfileId: getActiveProfileId(),
+  editingProfileId: null, // Track which profile is being edited
+  user: getUserProfile(), // Legally maintained for active profile compatibility
   currentFortune: {
     coffeeStep: 'intent',
     tarotStep: 'intent',
@@ -21,6 +41,7 @@ const initialState = {
     synthesisResult: null,
     synthesisAnimated: false,
     detailsAnimated: false,
+    shadowSymbolsAnimated: false,
     symbolsAnimated: false,
     coffeeAnimated: false,
     tarotAnimated: false,
@@ -46,7 +67,6 @@ function appReducer(state, action) {
         currentFortune: { 
           ...initialState.currentFortune, 
           ...action.payload,
-          // Ensure we don't restore stuck loading states
           coffeeStep: action.payload.coffeeStep || action.payload.step || 'intent',
           tarotStep: action.payload.tarotStep || 'intent'
         } 
@@ -56,9 +76,82 @@ function appReducer(state, action) {
       saveApiKey(action.payload);
       return { ...state, apiKey: action.payload, showApiKeyModal: false };
 
-    case 'SET_USER':
-      setUserProfile(action.payload);
-      return { ...state, user: action.payload, showOnboarding: false };
+    case 'SET_USER': {
+      // Compatibility and standard profile update
+      const targetId = state.editingProfileId || state.activeProfileId;
+      const updatedProfiles = state.profiles.map(p => 
+        p.id === targetId ? { ...p, ...action.payload } : p
+      );
+      saveProfiles(updatedProfiles);
+      
+      const nextUser = updatedProfiles.find(p => p.id === state.activeProfileId);
+
+      return { 
+        ...state, 
+        profiles: updatedProfiles, 
+        user: nextUser, 
+        showOnboarding: false,
+        editingProfileId: null
+      };
+    }
+
+    case 'ADD_PROFILE': {
+      const newProfiles = [...state.profiles, action.payload];
+      saveProfiles(newProfiles);
+      saveActiveId(action.payload.id);
+      return { 
+        ...state, 
+        profiles: newProfiles, 
+        activeProfileId: action.payload.id,
+        user: action.payload,
+        showOnboarding: false,
+        editingProfileId: null
+      };
+    }
+
+    case 'START_EDIT_PROFILE': {
+      return { 
+        ...state, 
+        editingProfileId: action.payload, 
+        showOnboarding: true 
+      };
+    }
+
+    case 'STOP_EDIT_PROFILE': {
+      return { 
+        ...state, 
+        editingProfileId: null, 
+        showOnboarding: false 
+      };
+    }
+
+    case 'SWITCH_PROFILE': {
+//...
+      const profile = state.profiles.find(p => p.id === action.payload) || state.profiles[0];
+      saveActiveId(profile.id);
+      return { 
+        ...state, 
+        activeProfileId: profile.id, 
+        user: profile 
+      };
+    }
+
+    case 'DELETE_PROFILE': {
+      if (action.payload === 'main') return state; // Protection for main account
+      const filtered = state.profiles.filter(p => p.id !== action.payload);
+      saveProfiles(filtered);
+      
+      // If we deleted the active profile, switch back to main
+      let nextId = state.activeProfileId;
+      let nextUser = state.user;
+      if (state.activeProfileId === action.payload) {
+        nextId = 'main';
+        nextUser = filtered.find(p => p.id === 'main') || filtered[0];
+        saveActiveId('main');
+      }
+      
+      return { ...state, profiles: filtered, activeProfileId: nextId, user: nextUser };
+    }
 
     case 'TOGGLE_API_KEY_MODAL':
       return { ...state, showApiKeyModal: !state.showApiKeyModal };
@@ -69,8 +162,6 @@ function appReducer(state, action) {
       const nextTestMode = !state.isTestMode;
       setTestMode(nextTestMode);
       return { ...state, isTestMode: nextTestMode };
-
-
 
     case 'SHOW_API_KEY_MODAL':
       return { ...state, showApiKeyModal: action.payload };
@@ -251,6 +342,7 @@ function appReducer(state, action) {
       return { ...state, error: null };
 
     case 'CLEAR_HISTORY':
+      clearHistory();
       return { ...state, history: [] };
 
     case 'SAVE_TO_HISTORY': {

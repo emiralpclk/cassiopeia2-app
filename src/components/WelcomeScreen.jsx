@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '../context/AppContext';
+import CassiopeiaLogo from './CassiopeiaLogo';
 
 export default function WelcomeScreen() {
   const dispatch = useAppDispatch();
@@ -9,10 +10,10 @@ export default function WelcomeScreen() {
     // Initial entrance delay for magic feel
     const timer = setTimeout(() => setShowContent(true), 100);
     
-    // Auto-proceed after animation completes
+    // Auto-proceed after animation completes (3 tur × 1.8s = ~5.4s)
     const proceedTimer = setTimeout(() => {
       dispatch({ type: 'HIDE_WELCOME' });
-    }, 3500);
+    }, 5500);
 
     return () => {
       clearTimeout(timer);
@@ -54,39 +55,12 @@ export default function WelcomeScreen() {
         opacity: showContent ? 1 : 0,
         transition: 'all 1.5s cubic-bezier(0.34, 1.56, 0.64, 1)'
       }}>
-        {/* Outer Ring */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          border: '1px solid var(--accent)',
-          borderRadius: '50%',
-          opacity: 0.3,
-          animation: 'spin-slow 20s infinite linear'
-        }} />
-        
-        {/* Floating Geometric Sigil */}
-        <div style={{
-          width: '100px',
-          height: '100px',
-          background: 'var(--accent-gradient)',
-          WebkitMaskImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\'%3E%3Cpath d=\'M12 2L4.5 20.29L5.21 21L12 18L18.79 21L19.5 20.29L12 2Z\' /%3E%3C/svg%3E")',
-          WebkitMaskRepeat: 'no-repeat',
-          WebkitMaskPosition: 'center',
-          WebkitMaskSize: 'contain',
-          filter: 'drop-shadow(0 0 15px var(--accent-glow))',
-          animation: 'sigil-float 4s infinite ease-in-out'
-        }} />
-        
-        {/* Core Light */}
-        <div style={{
-          position: 'absolute',
-          width: '4px',
-          height: '4px',
-          background: '#fff',
-          borderRadius: '50%',
-          boxShadow: '0 0 40px 20px var(--accent-glow)',
-          animation: 'core-pulse 2s infinite alternate ease-in-out'
-        }} />
+        {/* Cassiopeia Logo — loading spin modu */}
+        <CassiopeiaLogo
+          size={180}
+          isLoading={true}
+          color="var(--accent)"
+        />
       </div>
 
       {/* Welcome Text */}

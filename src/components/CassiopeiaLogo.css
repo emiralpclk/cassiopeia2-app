@@ -1,0 +1,87 @@
+/* ─────────────────────────────────────────────────────────────
+   CassiopeiaLogo — Premium SVG Animations
+   ───────────────────────────────────────────────────────────── */
+
+.cassiopeia-logo-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Ana SVG ────────────────────────────────────────────────── */
+.cassio-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 0 14px rgba(226, 232, 240, 0.2));
+}
+
+/* ── Idle: Yavaş nefes + hafif dönüş ───────────────────────── */
+.logo-idle-breathe {
+  animation: idle-breathe 8s ease-in-out infinite;
+  transform-origin: 50% 50%;
+}
+
+@keyframes idle-breathe {
+  0%   { transform: rotate(0deg)   scale(1);    opacity: 0.88; }
+  25%  { transform: rotate(4deg)   scale(1.03); opacity: 1;    }
+  50%  { transform: rotate(0deg)   scale(1.01); opacity: 0.95; }
+  75%  { transform: rotate(-4deg)  scale(1.03); opacity: 1;    }
+  100% { transform: rotate(0deg)   scale(1);    opacity: 0.88; }
+}
+
+/* ── Loading: Hızlı dönüş ───────────────────────────────────── */
+.logo-loading-spin {
+  animation: full-spin 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  transform-origin: 50% 50%;
+}
+
+@keyframes full-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Dış Halka döner (çok yavaş, ters yön) ─────────────────── */
+.cassio-ring-outer {
+  animation: ring-counter 40s linear infinite;
+  transform-origin: 100px 100px;
+}
+
+@keyframes ring-counter {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+
+/* ── İç Halka döner (biraz daha hızlı, aynı yön) ───────────── */
+.cassio-ring-inner {
+  animation: ring-forward 25s linear infinite;
+  transform-origin: 100px 100px;
+}
+
+@keyframes ring-forward {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Merkez nokta pulse ──────────────────────────────────────── */
+.cassio-center-pulse {
+  animation: center-pulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes center-pulse {
+  0%   { r: 3;   opacity: 0.7; }
+  100% { r: 5.5; opacity: 1;   filter: drop-shadow(0 0 8px var(--glow, rgba(226,232,240,0.5))); }
+}
+
+/* ── Yıldız Parlamaları (her kol için farklı gecikme) ───────── */
+.star-twinkle-1 { animation: star-burst 2.8s ease-in-out infinite alternate 0s;    transform-box: fill-box; }
+.star-twinkle-2 { animation: star-burst 2.8s ease-in-out infinite alternate 0.56s; transform-box: fill-box; }
+.star-twinkle-3 { animation: star-burst 2.8s ease-in-out infinite alternate 1.12s; transform-box: fill-box; }
+.star-twinkle-4 { animation: star-burst 2.8s ease-in-out infinite alternate 1.68s; transform-box: fill-box; }
+.star-twinkle-5 { animation: star-burst 2.8s ease-in-out infinite alternate 2.24s; transform-box: fill-box; }
+
+@keyframes star-burst {
+  0%   { transform: scale(0.6);   opacity: 0.3; }
+  60%  { transform: scale(1.4);   opacity: 1;   filter: drop-shadow(0 0 5px rgba(226,232,240,0.9)); }
+  100% { transform: scale(0.8);   opacity: 0.5; }
+}

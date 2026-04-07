@@ -1,17 +1,33 @@
 export const ZODIAC_SIGNS = [
-  { id: 'aries', name: 'Koç', emoji: '♈', element: 'Ateş', date: '21 Mar - 19 Nis' },
-  { id: 'taurus', name: 'Boğa', emoji: '♉', element: 'Toprak', date: '20 Nis - 20 May' },
-  { id: 'gemini', name: 'İkizler', emoji: '♊', element: 'Hava', date: '21 May - 20 Haz' },
-  { id: 'cancer', name: 'Yengeç', emoji: '♋', element: 'Su', date: '21 Haz - 22 Tem' },
-  { id: 'leo', name: 'Aslan', emoji: '♌', element: 'Ateş', date: '23 Tem - 22 Ağu' },
-  { id: 'virgo', name: 'Başak', emoji: '♍', element: 'Toprak', date: '23 Ağu - 22 Eyl' },
-  { id: 'libra', name: 'Terazi', emoji: '♎', element: 'Hava', date: '23 Eyl - 22 Eki' },
-  { id: 'scorpio', name: 'Akrep', emoji: '♏', element: 'Su', date: '23 Eki - 21 Kas' },
-  { id: 'sagittarius', name: 'Yay', emoji: '♐', element: 'Ateş', date: '22 Kas - 21 Ara' },
-  { id: 'capricorn', name: 'Oğlak', emoji: '♑', element: 'Toprak', date: '22 Ara - 19 Oca' },
-  { id: 'aquarius', name: 'Kova', emoji: '♒', element: 'Hava', date: '20 Oca - 18 Şub' },
-  { id: 'pisces', name: 'Balık', emoji: '♓', element: 'Su', date: '19 Şub - 20 Mar' },
+  { id: 'aries', name: 'Koç', icon: 'aries', element: 'Ateş', date: '21 Mar - 19 Nis', start: { m: 3, d: 21 }, end: { m: 4, d: 19 } },
+  { id: 'taurus', name: 'Boğa', icon: 'taurus', element: 'Toprak', date: '20 Nis - 20 May', start: { m: 4, d: 20 }, end: { m: 5, d: 20 } },
+  { id: 'gemini', name: 'İkizler', icon: 'gemini', element: 'Hava', date: '21 May - 20 Haz', start: { m: 5, d: 21 }, end: { m: 6, d: 20 } },
+  { id: 'cancer', name: 'Yengeç', icon: 'cancer', element: 'Su', date: '21 Haz - 22 Tem', start: { m: 6, d: 21 }, end: { m: 7, d: 22 } },
+  { id: 'leo', name: 'Aslan', icon: 'leo', element: 'Ateş', date: '23 Tem - 22 Ağu', start: { m: 7, d: 23 }, end: { m: 8, d: 22 } },
+  { id: 'virgo', name: 'Başak', icon: 'virgo', element: 'Toprak', date: '23 Ağu - 22 Eyl', start: { m: 8, d: 23 }, end: { m: 9, d: 22 } },
+  { id: 'libra', name: 'Terazi', icon: 'libra', element: 'Hava', date: '23 Eyl - 22 Eki', start: { m: 9, d: 23 }, end: { m: 10, d: 22 } },
+  { id: 'scorpio', name: 'Akrep', icon: 'scorpio', element: 'Su', date: '23 Eki - 21 Kas', start: { m: 10, d: 23 }, end: { m: 11, d: 21 } },
+  { id: 'sagittarius', name: 'Yay', icon: 'sagittarius', element: 'Ateş', date: '22 Kas - 21 Ara', start: { m: 11, d: 22 }, end: { m: 12, d: 21 } },
+  { id: 'capricorn', name: 'Oğlak', icon: 'capricorn', element: 'Toprak', date: '22 Ara - 19 Oca', start: { m: 12, d: 22 }, end: { m: 1, d: 19 } },
+  { id: 'aquarius', name: 'Kova', icon: 'aquarius', element: 'Hava', date: '20 Oca - 18 Şub', start: { m: 1, d: 20 }, end: { m: 2, d: 18 } },
+  { id: 'pisces', name: 'Balık', icon: 'pisces', element: 'Su', date: '19 Şub - 20 Mar', start: { m: 2, d: 19 }, end: { m: 3, d: 20 } },
 ];
+
+export const ELEMENT_DATA = {
+  'Ateş': { id: 'fire', icon: 'local_fire_department', color: '#ff4d4d', aura: 'aura-fire' },
+  'Su': { id: 'water', icon: 'water_drop', color: '#4da6ff', aura: 'aura-water' },
+  'Toprak': { id: 'earth', icon: 'forest', color: '#a6ff4d', aura: 'aura-earth' },
+  'Hava': { id: 'air', icon: 'air', color: '#ffffff', aura: 'aura-air' }
+};
+
+export const getZodiacByDate = (day, month) => {
+  if (!day || !month) return null;
+  return ZODIAC_SIGNS.find(z => {
+    if (z.start.m === month && day >= z.start.d) return true;
+    if (z.end.m === month && day <= z.end.d) return true;
+    return false;
+  }) || null;
+};
 
 export const AGE_RANGES = [
   { id: '18-24', label: '18-24' },
@@ -21,20 +37,30 @@ export const AGE_RANGES = [
   { id: '55+', label: '55 ve üzeri' }
 ];
 
+export const GENDER_OPTIONS = [
+  { id: 'woman', label: 'Kadın', icon: 'female' },
+  { id: 'man', label: 'Erkek', icon: 'male' },
+  { id: 'lgbtq', label: 'LGBTQ+', icon: 'diversity_3' },
+];
+
 export const RELATIONSHIP_STATUSES = [
-  { id: 'single', label: 'Bekar', emoji: '💫' },
-  { id: 'relationship', label: 'İlişkide', emoji: '💕' },
-  { id: 'married', label: 'Evli', emoji: '💍' },
-  { id: 'complicated', label: 'Karmaşık', emoji: '🌀' },
+  { id: 'single', label: 'Bekar', icon: 'person', complex: false },
+  { id: 'relationship', label: 'İlişkide', icon: 'favorite', complex: false },
+  { id: 'married', label: 'Evli', icon: 'diamond', complex: false },
+  { id: 'broken_up', label: 'İlişkim Bitti', icon: 'heart_broken', complex: false },
+  { id: 'platonic', label: 'Platonik', icon: 'volunteer_activism', complex: true },
+  { id: 'complicated', label: 'Karmaşık', icon: 'query_stats', complex: true },
+  { id: 'long_distance', label: 'Uzak Mesafe', icon: 'public', complex: true },
+  { id: 'ex_trouble', label: 'Eski Sevgili Mevzuları', icon: 'history_toggle_off', complex: true },
 ];
 
 export const FORTUNE_TYPES = [
-  { id: 'coffee', name: 'Kahve Falı', emoji: '☕', description: 'Fincanındaki sembolleri oku', available: true },
-  { id: 'tarot', name: 'Tarot', emoji: '🃏', description: 'Kartlardan geleceğe bak', available: true },
-  { id: 'dream', name: 'Rüya Yorumu', emoji: '🌙', description: 'Rüyanın anlamını keşfet', available: false, phase: 2 },
-  { id: 'numerology', name: 'Numeroloji', emoji: '🔢', description: 'Sayıların sırrını öğren', available: false, phase: 3 },
-  { id: 'compatibility', name: 'Burç Uyumu', emoji: '♈', description: 'İki burcun uyumuna bak', available: false, phase: 3 },
-  { id: 'palm', name: 'El Falı', emoji: '✋', description: 'Avucundaki çizgileri oku', available: false, phase: 3 },
+  { id: 'coffee', name: 'Kahve Falı', icon: 'local_cafe', description: 'Fincanındaki sembolleri oku', available: true },
+  { id: 'tarot', name: 'Tarot', icon: 'style', description: 'Kartlardan geleceğe bak', available: true },
+  { id: 'dream', name: 'Rüya Yorumu', icon: 'bedtime', description: 'Rüyanın anlamını keşfet', available: false, phase: 2 },
+  { id: 'numerology', name: 'Numeroloji', icon: 'numbers', description: 'Sayıların sırrını öğren', available: false, phase: 3 },
+  { id: 'compatibility', name: 'Burç Uyumu', icon: 'favorite_border', description: 'İnişli çıkışlı burç uyumu', available: false, phase: 3 },
+  { id: 'palm', name: 'El Falı', icon: 'back_hand', description: 'Avucundaki çizgileri oku', available: false, phase: 3 },
 ];
 
 export const TAROT_SLOTS = [

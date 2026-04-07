@@ -7,7 +7,9 @@ import localforage from 'localforage';
 
 const KEYS = {
   API_KEY: 'cassiopeia_api_key',
-  USER_PROFILE: 'cassiopeia_user_profile',
+  USER_PROFILE: 'cassiopeia_user_profile', // Legacy
+  PROFILES: 'cassiopeia_profiles',
+  ACTIVE_PROFILE_ID: 'cassiopeia_active_profile_id',
   HISTORY: 'cassiopeia_history',
   ONBOARDING_DONE: 'cassiopeia_onboarding_done',
   CURRENT_FORTUNE: 'cassiopeia_current_fortune',
@@ -24,18 +26,35 @@ localforage.config({
 // Auto-run migration
 export async function migrateStorage() {
   try {
+    // 1. History & Fortune Migration
     const oldHistory = localStorage.getItem(KEYS.HISTORY);
     if (oldHistory) {
       await localforage.setItem(KEYS.HISTORY, JSON.parse(oldHistory));
       localStorage.removeItem(KEYS.HISTORY);
-      console.log('History migrated to IndexedDB');
     }
 
     const oldFortune = localStorage.getItem(KEYS.CURRENT_FORTUNE);
     if (oldFortune) {
       await localforage.setItem(KEYS.CURRENT_FORTUNE, JSON.parse(oldFortune));
       localStorage.removeItem(KEYS.CURRENT_FORTUNE);
-      console.log('Current Fortune migrated to IndexedDB');
+    }
+
+    // 2. Multi-Profile Migration
+    const legacyProfile = localStorage.getItem(KEYS.USER_PROFILE);
+    const existingProfiles = localStorage.getItem(KEYS.PROFILES);
+
+    if (legacyProfile && !existingProfiles) {
+      const parsedLegacy = JSON.parse(legacyProfile);
+      const mainProfile = {
+        ...parsedLegacy,
+        id: 'main',
+        name: 'Ana Hesap',
+        isMain: true
+      };
+      localStorage.setItem(KEYS.PROFILES, JSON.stringify([mainProfile]));
+      localStorage.setItem(KEYS.ACTIVE_PROFILE_ID, 'main');
+      // Keep legacy for safety but mark it
+      console.log('User profile migrated to Multi-Profile system');
     }
   } catch (err) {
     console.error('Migration failed:', err);
@@ -52,16 +71,57 @@ export function setApiKey(key) {
   try { localStorage.setItem(KEYS.API_KEY, key); } catch {}
 }
 
-// User Profile
-export function getUserProfile() {
+// Multi-Profile Storage
+export function getProfiles() {
   try {
-    const data = localStorage.getItem(KEYS.USER_PROFILE);
-    return data ? JSON.parse(data) : null;
-  } catch { return null; }
+    const data = localStorage.getItem(KEYS.PROFILES);
+    const profiles = data ? JSON.parse(data) : [];
+    
+    // Self-healing: Remove duplicate IDs if they exist
+    const unique = [];
+    const seen = new Set();
+    for (const p of profiles) {
+      if (!seen.has(p.id)) {
+        unique.push(p);
+        seen.add(p.id);
+      }
+    }
+    
+    if (unique.length !== profiles.length) {
+      setProfiles(unique);
+    }
+    
+    return unique;
+  } catch {
+    return [];
+  }
 }
 
-export function setUserProfile(profile) {
-  try { localStorage.setItem(KEYS.USER_PROFILE, JSON.stringify(profile)); } catch {}
+export function setProfiles(profiles) {
+  try {
+    // Ensure uniqueness before saving
+    const unique = Array.from(new Map(profiles.map(p => [p.id, p])).values());
+    localStorage.setItem(KEYS.PROFILES, JSON.stringify(unique));
+  } catch (err) {
+    console.error('Error saving profiles:', err);
+  }
+}
+
+export function getActiveProfileId() {
+  try { return localStorage.getItem(KEYS.ACTIVE_PROFILE_ID) || 'main'; } catch { return 'main'; }
+}
+
+export function setActiveProfileId(id) {
+  try { localStorage.setItem(KEYS.ACTIVE_PROFILE_ID, id); } catch {}
+}
+
+// Legacy support (to be phased out)
+export function getUserProfile() {
+  try {
+    const activeId = getActiveProfileId();
+    const profiles = getProfiles();
+    return profiles.find(p => p.id === activeId) || profiles[0] || null;
+  } catch { return null; }
 }
 
 // Onboarding

@@ -34,8 +34,8 @@
   --radius-sm: 12px;
   --radius-xs: 8px;
   --nav-height: 72px;
-  --font-body: 'Space Grotesk', -apple-system, sans-serif;
-  --font-label: 'Inter', -apple-system, sans-serif;
+  --font-body: 'Outfit', -apple-system, sans-serif;
+  --font-label: 'Outfit', -apple-system, sans-serif;
 }
 
 /* Base Styles Update */
@@ -60,7 +60,6 @@ body {
 .fortune-type-card,
 .profile-card,
 .modal-container,
-.onboarding-container,
 .intent-box-mini,
 .detail-card,
 .detail-card-glass {
@@ -68,8 +67,34 @@ body {
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  transform: translateZ(0); /* Donanım hızlandırmayı zorlar */
+  transform: translateZ(0);
   will-change: transform, backdrop-filter;
+}
+
+.onboarding-container {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  background: rgba(20, 23, 31, 0.98);
+  border-radius: 24px;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 92%;
+  max-width: 400px;
+  min-height: 600px; /* Sabit yükseklik - zıplamayı önler */
+  max-height: 85vh;
+  border-radius: 24px;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* Animations */
@@ -208,10 +233,12 @@ body {
   max-width: 430px;
   margin: 0 auto;
   position: relative;
-  background-image: linear-gradient(rgba(5, 5, 8, 0.40), rgba(5, 5, 8, 0.40)), url('/bg-mystic.jpg');
+  background-image: 
+    linear-gradient(rgba(5, 5, 8, 0.75), rgba(5, 5, 8, 0.75)),
+    url('./assets/bg-dark.jpg');
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
+  background-repeat: no-repeat;
   overflow: hidden;
   box-shadow: 0 0 60px rgba(0,0,0,0.5);
 }
@@ -334,17 +361,140 @@ body {
 }
 
 /* ============================================================
-   Home Page
+   Home Page Atmosphere
    ============================================================ */
+body {
+  background: #020208 !important; /* Neredeyse tam siyah */
+  background-image: 
+    radial-gradient(ellipse at 0% 0%, rgba(var(--accent-rgb), 0.08) 0%, transparent 40%),
+    radial-gradient(ellipse at 100% 100%, rgba(var(--accent-rgb), 0.05) 0%, transparent 40%);
+}
+
+@keyframes stardust-float {
+  0% { background-position: 0% 0%, 100% 100%; }
+  100% { background-position: 10% 10%, 90% 90%; }
+}
+
+/* ============================================================
+   Meteor Shower Effect (App Shell İçine Sınırlandırılmış)
+   ============================================================ */
+.app-shell::before, 
+.app-shell::after {
+  content: '';
+  position: absolute;
+  left: -5%;          /* Soldan başlar, ekran dışı */
+  width: 2px;
+  height: 120px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(200, 220, 255, 0.5) 70%,
+    rgba(255, 255, 255, 1) 100%
+  );
+  border-radius: 0 0 2px 2px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9));
+}
+
+.app-shell::before {
+  top: 8%;
+  animation: meteor-shower 9s infinite linear;
+  animation-delay: 0s;
+}
+
+.app-shell::after {
+  top: 55%;
+  animation: meteor-shower 9s infinite linear;
+  animation-delay: 4.5s; /* Arka plan — 2. meteor */
+}
+
+/* Ek arka plan meteorları (::before::after'ı tamamlar, z-index: 0) */
+.meteor-back {
+  position: absolute;
+  left: -5%;
+  width: 2px;
+  height: 120px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(200, 220, 255, 0.5) 70%,
+    rgba(255, 255, 255, 1) 100%
+  );
+  border-radius: 0 0 2px 2px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9));
+}
+
+.meteor-back-1 {
+  top: 30%;
+  animation: meteor-shower 9s infinite linear;
+  animation-delay: 2.25s; /* ::before (0s) ile ::after (4.5s) arasını doldurur */
+}
+
+.meteor-back-2 {
+  top: 72%;
+  animation: meteor-shower 9s infinite linear;
+  animation-delay: 6.75s; /* ::after (4.5s)'ın ardından gelir */
+}
+
+/* Ön planda akan meteorlar (kartların üstünde) */
+.meteor-front {
+  position: absolute;
+  left: -5%;
+  width: 2px;
+  height: 120px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(200, 220, 255, 0.6) 70%,
+    rgba(255, 255, 255, 1) 100%
+  );
+  border-radius: 0 0 2px 2px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10;           /* Kartların üzerinde */
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9));
+}
+
+.meteor-front-1 {
+  top: 22%;
+  animation: meteor-shower 9s infinite linear;
+  animation-delay: 2.25s;
+}
+
+.meteor-front-2 {
+  top: 70%;
+  animation: meteor-shower 9s infinite linear;
+  animation-delay: 6.75s;
+}
+
+@keyframes meteor-shower {
+  0%   { transform: translateX(0)     translateY(0)     rotate(-70deg); opacity: 0; }
+  6%   { opacity: 1; }
+  45%  { transform: translateX(560px) translateY(200px) rotate(-70deg); opacity: 0; }
+  100% { transform: translateX(560px) translateY(200px) rotate(-70deg); opacity: 0; }
+}
+
 .home-header {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
   margin-bottom: 28px;
+  gap: 16px;
+  position: relative;
+  min-height: 80px;
+  animation: entry-reveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .home-greeting {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 14px;
 }
@@ -372,108 +522,484 @@ body {
   padding-top: 4px;
 }
 
-/* Quick Action */
+/* Quick Action Button (Portal Style) */
 .quick-action-btn {
   width: 100%;
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 18px 20px;
-  background: var(--accent-gradient);
-  border: none;
-  border-radius: var(--radius);
-  color: #0a0a0f;
+  padding: 20px 24px;
+  background: rgba(255, 255, 255, 0.05); /* Glass Base */
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 0 20px rgba(var(--accent-rgb), 0.1);
+  border-radius: 20px;
+  color: #fff;
   font-family: var(--font-body);
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  margin-bottom: 24px;
-  transition: transform 0.15s, box-shadow 0.3s;
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: entry-reveal 0.8s 0.1s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
-.quick-action-btn:active {
-  transform: scale(0.98);
+.quick-action-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.25),
+    transparent
+  );
+  pointer-events: none;
+  transform: skewX(-20deg);
+}
+
+/* Basınca ışık sağa kayar */
+.btn-pressed::before {
+  animation: shimmer-slide 0.5s ease-in forwards !important;
+}
+
+@keyframes shimmer-slide {
+  0%   { left: -100%; opacity: 1; }
+  100% { left: 150%;  opacity: 1; }
+}
+
+.icon-max-glow {
+  filter: 
+    drop-shadow(0 0 5px #fff) 
+    drop-shadow(0 0 10px #fff) 
+    drop-shadow(0 0 20px rgba(255, 255, 255, 0.4)) !important;
+  animation: glow-pulse 3s infinite ease-in-out;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { filter: drop-shadow(0 0 5px #fff) drop-shadow(0 0 10px #fff); }
+  50% { filter: drop-shadow(0 0 8px #fff) drop-shadow(0 0 15px #fff) drop-shadow(0 0 25px rgba(255,255,255,0.6)); }
+}
+
+.quick-action-btn:hover .icon-max-glow {
+  transform: scale(1.1) rotate(5deg);
+  filter: 
+    drop-shadow(0 0 10px #fff) 
+    drop-shadow(0 0 20px #fff) 
+    drop-shadow(0 0 30px rgba(255, 255, 255, 0.8)) !important;
+}
+
+.quick-action-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .quick-action-btn .arrow {
   margin-left: auto;
+  opacity: 0.6;
+  transition: transform 0.3s;
 }
 
-/* Home Cards */
-.home-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
+.quick-action-btn:hover .arrow {
+  transform: translateX(4px);
+  opacity: 1;
+}
+
+/* =========================================================
+   DAILY REVEAL SYSTEM — Flip Cards
+   ========================================================= */
+
+/* Perspective wrapper */
+.daily-card-section,
+.horoscope-section,
+.energy-section {
+  perspective: 1200px;
+  cursor: pointer;
+}
+
+/* Kartlar açıldıktan sonra tıklanamaz */
+.daily-card-section.no-click,
+.horoscope-section.no-click,
+.energy-section.no-click {
+  cursor: default;
+}
+
+/* Flip inner container */
+.flip-inner {
+  position: relative;
+  width: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.flip-inner.revealed {
+  transform: rotateY(180deg);
+}
+
+/* Front & Back faces */
+.flip-front,
+.flip-back {
+  width: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.flip-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  transform: rotateY(180deg);
+}
+
+/* Animasyon bitti → back face normal akışa girer, kart içeriğe göre büyür */
+.flip-inner.flip-done {
+  transform: none !important;
+  transition: none !important;
+}
+
+.flip-inner.flip-done .flip-front {
+  display: none;
+}
+
+.flip-inner.flip-done .flip-back {
+  position: static;
+  transform: none;
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
+}
+
+/* Min heights — sadece flip animasyonu için (kapalı hal) */
+.daily-card-section  { min-height: 220px; }
+.horoscope-section   { min-height: 270px; }
+.energy-section      { min-height: 160px; }
+
+/* Flip bittikten sonra içeriğe göre boyut */
+.daily-card-section.flip-done,
+.horoscope-section.flip-done {
+  min-height: 0;
+}
+
+/* ── Kapalı Hal Stilleri ──────────────────────────────── */
+.card-closed-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  text-align: center;
+  min-height: 160px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Tarot kart sırtı — gerçek görsel */
+.card-back-pattern {
+  position: relative;
+  width: 90px;
+  height: 126px;
   margin-bottom: 16px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.08);
+  animation: card-float 4s ease-in-out infinite;
+}
+
+.tarot-back-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+}
+
+@keyframes card-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%       { transform: translateY(-6px) rotate(1deg); }
+}
+
+/* Gizem metni */
+.card-mystery-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.75);
+  margin-bottom: 4px;
+  letter-spacing: 0.02em;
+}
+
+.card-mystery-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* ── Burç Çarkı (Kapalı Hal) ─────────────────────────── */
+.horoscope-closed {
+  padding: 8px 16px 0; /* Alttaki gereksiz boşluğu aldık */
+}
+
+.home-card.horoscope-section:not(.flip-done) {
+  padding-bottom: 8px; /* Kapalıyken text alta sıfıra yakın otursun */
+}
+
+.zodiac-wheel-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zodiac-wheel-svg {
+  animation: wheel-rotate 60s linear infinite;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.06));
+}
+
+@keyframes wheel-rotate {
+  from { transform: rotate(0deg);   }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Alıntı Gösterimi (Kapalı Enerji) ───────────────── */
+.energy-closed {
+  min-height: 140px;
+  padding: 24px 20px;
+  justify-content: center;
+}
+
+.quote-display {
+  padding: 0 4px;
+}
+
+.quote-text {
+  font-size: 15px;
+  font-weight: 400;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.6;
+  margin-bottom: 10px;
+  letter-spacing: 0.01em;
+}
+
+.quote-author {
+  font-size: 12px;
+  color: rgba(30, 180, 100, 0.8);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-align: right;
+}
+
+/* ── Aurora Bloom (Açılış Patlaması) ────────────────── */
+@keyframes aurora-bloom {
+  0%   { opacity: 0.4; transform: scale(1); }
+  40%  { opacity: 1;   transform: scale(1.3); }
+  100% { opacity: 0.7; transform: scale(1); }
+}
+
+.aurora-bloom .card-aurora::before {
+  animation: aurora-blob 10s infinite ease-in-out, aurora-bloom 1.5s ease-out forwards !important;
+}
+
+/* =========================================================
+   LIQUID AURORA — Premium Active State
+   ========================================================= */
+.active-state {
+  transform: scale(0.97) !important;
+  border-color: rgba(var(--aurora-1), 0.5) !important;
+  box-shadow: 
+    0 2px 12px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(var(--aurora-1), 0.3),
+    inset 0 0 40px rgba(var(--aurora-1), 0.08) !important;
+  transition: all 0.14s cubic-bezier(0.4, 0, 1, 1) !important;
+  filter: brightness(0.92);
+}
+
+/* Aurora container */
+.card-aurora {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* The actual blobs */
+.card-aurora::before {
+  content: '';
+  position: absolute;
+  width: 160%;
+  height: 160%;
+  top: -30%;
+  left: -30%;
+  background:
+    radial-gradient(ellipse 55% 55% at 30% 40%, rgba(var(--aurora-1), 0.55) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 75% 65%, rgba(var(--aurora-2), 0.45) 0%, transparent 55%);
+  animation: aurora-blob 10s infinite ease-in-out;
+}
+
+@keyframes aurora-blob {
+  0%, 100% {
+    transform: scale(1) rotate(0deg) translate(0%, 0%);
+    opacity: 0.9;
+  }
+  25% {
+    transform: scale(1.12) rotate(18deg) translate(6%, -8%);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.95) rotate(-12deg) translate(-5%, 10%);
+    opacity: 0.8;
+  }
+  75% {
+    transform: scale(1.08) rotate(25deg) translate(8%, 5%);
+    opacity: 1;
+  }
+}
+
+/* All card content sits above the aurora */
+.home-card > *:not(.card-aurora),
+.active-state > *:not(.card-aurora) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Spring release */
+.home-card:not(.active-state),
+.quick-action-btn:not(.active-state) {
+  transition: all 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+/* Home Cards (Glassmorphism Reimagined) */
+.home-card {
+  background: rgba(255, 255, 255, 0.07); /* Net zemin üzerinde belli oluyor */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12); /* Keskin, net çerçeve */
+  border-radius: 24px;
+  padding: 24px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 2px 0 rgba(255, 255, 255, 0.05) inset, /* Üstten ince ışık hattı */
+    0 12px 32px rgba(0, 0, 0, 0.5);
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+}
+
+.home-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.daily-card-section { animation: entry-reveal 0.8s 0.2s both; }
+.horoscope-section { animation: entry-reveal 0.8s 0.3s both; }
+.energy-section { animation: entry-reveal 0.8s 0.4s both; }
+
+@keyframes entry-reveal {
+  from { opacity: 0; transform: translateY(20px); filter: blur(5px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
 .card-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
+  gap: 12px;
+  margin-bottom: 20px;
   color: var(--text-secondary);
 }
 
 .card-header h3 {
-  font-size: 14px;
+  margin: 0;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  letter-spacing: 0.12em; /* Sacred Text Spacing */
+  color: #fff;
+  opacity: 0.8;
 }
 
-.card-header .material-symbols-outlined {
-  font-size: 20px;
-  color: var(--accent);
+.card-header .mystic-icon {
+  opacity: 0.7;
 }
 
-.zodiac-mini-emoji {
-  font-size: 20px;
-}
-
-/* Daily Card */
+/* Daily Card Content */
 .daily-card-content {
   display: flex;
-  gap: 16px;
+  gap: 24px;
+  align-items: flex-start;
 }
 
 .daily-card-image {
-  width: 80px;
-  height: 120px;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
   flex-shrink: 0;
-  border: 1px solid var(--border);
+  width: 90px;
+  height: 135px;
+  position: relative;
+  z-index: 1;
+}
+
+/* The 'Hero Card' Aura */
+.daily-card-image::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150%;
+  height: 150%;
+  background: radial-gradient(circle, rgba(var(--accent-rgb), 0.3) 0%, transparent 70%);
+  z-index: -1;
+  filter: blur(20px);
+  pointer-events: none;
 }
 
 .daily-card-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: saturate(0.7) brightness(0.9);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+}
+
+.daily-card-image:hover img {
+  transform: scale(1.06) translateY(-4px);
 }
 
 .daily-card-info {
   flex: 1;
   min-width: 0;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .daily-card-name {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 4px;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 6px 0;
+  color: #fff;
 }
 
 .daily-card-meaning {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
-  margin-bottom: 10px;
+  font-style: italic;
+  margin-bottom: 12px;
+  opacity: 0.8;
 }
 
 .daily-card-reading {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* Horoscope */
@@ -1982,6 +2508,45 @@ body {
   border-style: dashed;
 }
 
+.cosmic-slot-empty {
+  background: #020205 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  overflow: hidden;
+  position: relative;
+}
+
+.cosmic-slot-empty::before,
+.cosmic-slot-empty::after {
+  content: '';
+  position: absolute;
+  inset: -10px;
+  pointer-events: none;
+  background-image: 
+    radial-gradient(1.5px 1.5px at 20px 30px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 50px 70px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(2px 2px at 80px 40px, rgba(255,255,255,0.9), transparent),
+    radial-gradient(1.5px 1.5px at 10px 120px, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1px 1px at 90px 130px, rgba(255,255,255,0.5), transparent),
+    radial-gradient(2px 2px at 40px 150px, rgba(255,255,255,0.8), transparent);
+  background-size: 120px 160px;
+  animation: cosmic-stars-twinkle 3s infinite alternate ease-in-out;
+}
+
+.cosmic-slot-empty::after {
+  background-image: 
+    radial-gradient(1px 1px at 70px 20px, rgba(180,220,255,0.9), transparent),
+    radial-gradient(2px 2px at 30px 90px, rgba(255,180,220,0.8), transparent),
+    radial-gradient(1.5px 1.5px at 60px 140px, rgba(255,255,180,0.9), transparent);
+  animation-duration: 4s;
+  animation-delay: -1.5s;
+}
+
+@keyframes cosmic-stars-twinkle {
+  0% { opacity: 0.1; transform: scale(1); }
+  50% { opacity: 0.7; }
+  100% { opacity: 0.2; transform: scale(1.05); }
+}
+
 .slot-card.revealed {
   border: 1px solid var(--accent);
   box-shadow: 0 0 20px var(--accent-glow);
@@ -2181,7 +2746,6 @@ body {
 }
 
 .card-back-face {
-  /* Applying the Modern Mystic design */
   position: relative;
   width: 100%;
   height: 100%;
@@ -2189,6 +2753,55 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Profile Management Overhaul - Moved to Global Scope */
+.profile-item-card {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.profile-item-card:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.profile-item-card.active-identity {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 15px rgba(var(--accent-rgb), 0.2);
+}
+
+/* Reverting to frameless action buttons */
+.profile-action-btn {
+  background: none !important;
+  border: none !important;
+  padding: 5px !important;
+  transition: opacity 0.2s;
+}
+
+.profile-action-btn:hover {
+  opacity: 1 !important;
+  transform: scale(1.1);
+}
+
+.add-identity-btn:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+
+.profile-avatar-small {
+  background: rgba(255, 255, 255, 0.05);
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.master-card .profile-avatar-small {
+  width: 65px;
+  height: 65px;
 }
 
 .card-front-face {
@@ -2202,8 +2815,15 @@ body {
   object-fit: cover;
 }
 
-.tarot-card-back.flipped .card-back-face {
-  transform: rotateY(180deg);
+@keyframes pulse-glow {
+  0% { transform: scale(0.95); opacity: 0.2; filter: blur(15px); }
+  100% { transform: scale(1.1); opacity: 0.4; filter: blur(25px); }
+}
+
+.greeting-emoji-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tarot-card-back.flipped .card-front-face {
@@ -3587,7 +4207,379 @@ body {
   overflow: hidden;
 }
 
-.history-date {
+.home-date {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 11px; /* Slightly larger */
+  color: var(--text-muted);
+  opacity: 0.8; /* Much more visible */
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600; /* Added weight */
+}
+
+/* ============================================================
+   Onboarding Birth Date UI
+   ============================================================ */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.onboarding-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.stepper-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+.stepper-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.stepper-btn:active {
+  background: var(--accent-glow);
+  transform: scale(0.9);
+}
+
+.onboarding-input-box {
+  width: 70px;
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.05);
+  color: white;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.onboarding-input-box:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+/* Onboarding Modal Links */
+.modal-link {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  opacity: 1; /* Ensure visible */
+}
+
+.modal-link:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.modal-link.complex-toggle {
+  color: var(--accent);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  margin-top: 20px;
+  padding: 12px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  width: 100%;
+  max-width: 250px;
+  font-size: 13px;
+}
+
+.modal-link.complex-toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.3);
+  text-decoration: none;
+}
+
+.modal-link.back-button {
+  color: rgba(255,255,255,0.4);
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+.modal-link.back-button:hover {
+  color: #fff;
+}
+
+/* ============================================================
+   Profile Identity Cards (Redesign)
+   ============================================================ */
+.profile-identity-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  cursor: pointer;
+  transition: all 0.5s cubic-bezier(0.2, 0, 0.2, 1);
+  background: rgba(15, 18, 30, 0.5);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile-identity-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.profile-identity-card:hover {
+  background: rgba(25, 30, 45, 0.6);
+  transform: translateY(-4px) scale(1.01);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.profile-identity-card.active-identity {
+  background: rgba(255, 255, 255, 0.08); /* Ethereal moonstone glow */
+  border-color: var(--accent);
+  box-shadow: 0 0 40px var(--accent-glow);
+}
+
+.master-card {
+  border-width: 1.5px;
+}
+
+/* Localized Identity Aura (Glow behind the icon) */
+.identity-aura-glow {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  left: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  filter: blur(50px);
+  opacity: 0.6;
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+  animation: identity-pulse 6s infinite ease-in-out;
+}
+
+@keyframes identity-pulse {
+  0%, 100% { opacity: 0.4; transform: translateY(-50%) scale(1); }
+  50% { opacity: 0.9; transform: translateY(-45%) scale(1.15); filter: blur(40px); }
+}
+
+.aura-fire { background: radial-gradient(circle, #ff3c00 0%, rgba(255, 60, 0, 0.2) 60%, transparent 100%); box-shadow: 0 0 25px rgba(255, 60, 0, 0.3); }
+.aura-water { background: radial-gradient(circle, #00b4ff 0%, rgba(0, 180, 255, 0.2) 60%, transparent 100%); box-shadow: 0 0 25px rgba(0, 180, 255, 0.3); }
+.aura-earth { background: radial-gradient(circle, #50ff50 0%, rgba(80, 255, 80, 0.2) 60%, transparent 100%); box-shadow: 0 0 25px rgba(80, 255, 80, 0.3); }
+.aura-air { background: radial-gradient(circle, #f0f8ff 0%, rgba(240, 248, 255, 0.2) 60%, transparent 100%); box-shadow: 0 0 25px rgba(240, 248, 255, 0.3); }
+
+.profile-tag-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 800;
+  opacity: 0.6;
+  margin-bottom: 4px;
+}
+
+.slot-progress-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.slot-visual-bar {
+  width: 80px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.slot-visual-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent) 0%, #fff 50%, var(--accent) 100%);
+  background-size: 200% 100%;
+  border-radius: 10px;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slot-shimmer 3s infinite linear;
+}
+
+@keyframes slot-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.profile-element-sub {
   font-size: 11px;
   color: var(--text-muted);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+/* Home Greeting Aura (Perfect Center & Contained) */
+.greeting-icon-wrapper {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mystic-home-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 52px; /* Balanced with larger ring */
+  height: 52px;
+  filter: blur(18px); 
+  opacity: 0.6;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  animation: aura-contained-pulse 8s infinite ease-in-out;
+}
+
+.halo-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px; /* Enlarged */
+  height: 64px;
+  border-radius: 50%;
+  border: 0.5px solid rgba(255, 255, 255, 0.1); 
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes aura-contained-pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.4; }
+  50% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.75; }
+}
+
+.greeting-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; 
+  margin-left: 16px; /* Increased to account for larger ring */
+  align-items: flex-start;
+}
+
+.greeting-text {
+  font-size: 13px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0.95; /* Prominent */
+  color: var(--text-muted);
+  line-height: normal;
+  font-weight: 500;
+}
+
+.greeting-zodiac {
+  font-size: 24px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+}
+
+.profile-card {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Relationship Grid Balance */
+.relationship-grid {
+  display: flex !important;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 30px !important;
+  width: 100%;
+}
+
+.relationship-card {
+  width: calc(50% - 6px); /* 2 per row */
+  min-width: 140px;
+}
+/* Header Identity Bar */
+.zodiac-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.vertical-divider {
+  width: 1px;
+  height: 28px;
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.15), transparent);
+  margin: 0 4px;
+}
+
+.zodiac-info-tag {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  justify-content: center;
+}
+
+.zodiac-tag-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  opacity: 0.85;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: normal;
+}
+
+.element-tag-label {
+  font-size: 10px;
+  opacity: 0.5;
+  color: var(--text-muted);
+  line-height: normal;
 }

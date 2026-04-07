@@ -129,8 +129,7 @@ export default function TarotResult() {
     if (step === 'past') setRevealStep('present');
     else if (step === 'present') setRevealStep('future');
     else if (step === 'future') {
-      setRevealStep('complete');
-      dispatch({ type: 'MARK_TAROT_ANIMATED' });
+      setRevealStep('seal');
     }
   };
 
@@ -158,11 +157,11 @@ export default function TarotResult() {
       <div className="results-container" style={{ marginTop: '40px' }}>
         {TAROT_SLOTS.map((slot, index) => {
           const card = selectedTarotCards.find(c => c.slot === slot.id);
-          const steps = ['past', 'present', 'future'];
+          const steps = ['past', 'present', 'future', 'seal', 'complete'];
           const currentStepIndex = steps.indexOf(revealStep);
           const slotStepIndex = steps.indexOf(slot.id);
           
-          const isVisible = revealStep === 'complete' || slotStepIndex <= currentStepIndex;
+          const isVisible = slotStepIndex <= currentStepIndex;
           const shouldAnimate = !tarotAnimated && revealStep === slot.id;
 
           if (!isVisible) return null;
@@ -205,7 +204,7 @@ export default function TarotResult() {
       </div>
 
       {/* Synthesis Seal */}
-      {revealStep === 'complete' && resultData?.seal && (
+      {(revealStep === 'seal' || revealStep === 'complete') && resultData?.seal && (
         <div className="emerald-seal fade-in" style={{ 
           marginTop: '60px', 
           padding: '32px', 
@@ -220,11 +219,21 @@ export default function TarotResult() {
           <div className="emerald-seal-aura"></div>
           <span className="material-symbols-outlined star-glow" style={{ fontSize: '32px', color: '#50C878', marginBottom: '16px' }}>flare</span>
           <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#50C878', marginBottom: '20px', textTransform: 'uppercase', letterSpacing: '0.15em' }}>Zümrüt Mührü</h3>
-          <Typewriter 
-            text={resultData?.seal || resultData?.muhur || "Kaderin mühürlendi."}
-            animate={!tarotAnimated}
-            speed={30}
-          />
+          {revealStep === 'seal' ? (
+            <Typewriter 
+              text={resultData?.seal || resultData?.muhur || "Kaderin mühürlendi."}
+              animate={true}
+              speed={30}
+              onFinish={() => {
+                setRevealStep('complete');
+                dispatch({ type: 'MARK_TAROT_ANIMATED' });
+              }}
+            />
+          ) : (
+            <div className="typewriter-container" style={{ fontSize: '15px', lineHeight: '1.7', color: 'var(--text-primary)' }}>
+              {resultData?.seal || resultData?.muhur || "Kaderin mühürlendi."}
+            </div>
+          )}
         </div>
       )}
 

@@ -36,6 +36,13 @@ export default function AppContent() {
 
   return (
     <div className="app-shell">
+      {/* Arka planda akan meteorlar (kartların altında) — ::before ::after + 2 ekstra */}
+      <div className="meteor-back meteor-back-1" />
+      <div className="meteor-back meteor-back-2" />
+      {/* Ön planda akan meteorlar (kartların üstünde) */}
+      <div className="meteor-front meteor-front-1" />
+      <div className="meteor-front meteor-front-2" />
+
       <ApiKeyModal />
       {showOnboarding && (!showApiKeyModal || isTestMode) && <OnboardingFlow />}
 
