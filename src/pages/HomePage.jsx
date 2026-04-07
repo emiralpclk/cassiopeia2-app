@@ -27,7 +27,12 @@ export default function HomePage() {
   const [dailyCard, setDailyCard] = useState(null);
   const [dailyCardReading, setDailyCardReading] = useState('');
   const [horoscope, setHoroscope] = useState('');
-  const [dailyEnergy, setDailyEnergy] = useState(null);
+  const [dailyEnergy, setDailyEnergy] = useState(() => {
+    const colors = ['Mavi', 'Kırmızı', 'Yeşil', 'Mor', 'Sarı', 'Turuncu', 'Pembe', 'Turkuaz', 'Gümüş', 'Beyaz'];
+    const today = new Date().toDateString();
+    const s = today.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+    return { color: colors[s % colors.length], number: ((s * 7) % 9) + 1 };
+  });
   const [zoomedImage, setZoomedImage] = useState(null);
   const [dailySeed, setDailySeed] = useState(0);
 
