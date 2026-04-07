@@ -77,14 +77,21 @@ function appReducer(state, action) {
       return { ...state, apiKey: action.payload, showApiKeyModal: false };
 
     case 'SET_USER': {
-      // Compatibility and standard profile update
       const targetId = state.editingProfileId || state.activeProfileId;
-      const updatedProfiles = state.profiles.map(p => 
+      let updatedProfiles = state.profiles.map(p => 
         p.id === targetId ? { ...p, ...action.payload } : p
       );
+
+      // Eğer profil listesi boşsa veya hedef profil bulunamadıysa → yeni profil olarak ekle
+      const found = updatedProfiles.find(p => p.id === targetId);
+      if (!found) {
+        const newProfile = { id: 'main', isMain: true, ...action.payload };
+        updatedProfiles = [newProfile];
+        saveActiveId('main');
+      }
+
       saveProfiles(updatedProfiles);
-      
-      const nextUser = updatedProfiles.find(p => p.id === state.activeProfileId);
+      const nextUser = updatedProfiles.find(p => p.id === (state.editingProfileId ? state.activeProfileId : targetId)) || updatedProfiles[0];
 
       return { 
         ...state, 

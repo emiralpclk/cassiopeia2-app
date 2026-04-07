@@ -36,7 +36,7 @@ export default function OnboardingFlow() {
         }
       } else {
         // Reset for new additions or initial setup
-        setStep(profiles && profiles.length > 0 ? 0 : 1);
+        setStep(0);
         setName('');
         setDay('01'); setMonth('01'); setYear('2003');
         setGender(''); setRelationshipStatus('');
@@ -128,8 +128,8 @@ export default function OnboardingFlow() {
         {/* Step 0: Name (Only for adding new profiles) */}
         {step === 0 && (
           <div className="onboarding-step">
-            <h2 className="step-title">Kimi Ekliyoruz?</h2>
-            <p className="step-subtitle">Bu profile bir isim vererek Cassiopeia'nın onu tanımasını sağla.</p>
+            <h2 className="step-title">{isAddingNew ? 'Kimi Ekliyoruz?' : 'Adın Ne?'}</h2>
+            <p className="step-subtitle">{isAddingNew ? 'Bu profile bir isim vererek Cassiopeia\'nın onu tanımasını sağla.' : 'Cassiopeia seni tanısın, adını paylaş.'}</p>
             
             <div className="name-input-container" style={{ marginTop: '40px', width: '100%' }}>
               <input 

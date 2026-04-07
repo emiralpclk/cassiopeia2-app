@@ -642,6 +642,12 @@ body {
   transform: rotateY(180deg);
 }
 
+/* Kart açılınca ön yüzü hemen gizle — flip-done'da flash olmasın */
+.flip-inner.revealed .flip-front {
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* Front & Back faces */
 .flip-front,
 .flip-back {

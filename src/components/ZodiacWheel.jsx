@@ -176,7 +176,7 @@ export default function ZodiacWheel({ highlightSign = 'scorpio' }) {
               y={pt.y + 6}
               textAnchor="middle"
               fontSize={isActive ? 18 : 14}
-              fontFamily="'Georgia', 'Times New Roman', serif"
+              fontFamily="'Noto Sans Symbols 2', 'Segoe UI Symbol', 'Apple Symbols', serif"
               fill={isActive ? GOLD : SILVER}
               style={{
                 fontVariantEmoji: 'text',
