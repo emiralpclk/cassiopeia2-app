@@ -43,6 +43,8 @@ html, body {
   height: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 body {
@@ -234,8 +236,8 @@ body {
   margin: 0 auto;
   position: relative;
   background-image: 
-    linear-gradient(rgba(5, 5, 8, 0.75), rgba(5, 5, 8, 0.75)),
-    url('./assets/bg-dark.jpg');
+    linear-gradient(rgba(5, 8, 24, 0.4), rgba(5, 8, 24, 0.6)),
+    url('./assets/bg-nebula.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -364,7 +366,7 @@ body {
    Home Page Atmosphere
    ============================================================ */
 body {
-  background: #020208 !important; /* Neredeyse tam siyah */
+  background: #040814 !important; /* Koyu lacivert uzay */
   background-image: 
     radial-gradient(ellipse at 0% 0%, rgba(var(--accent-rgb), 0.08) 0%, transparent 40%),
     radial-gradient(ellipse at 100% 100%, rgba(var(--accent-rgb), 0.05) 0%, transparent 40%);
@@ -562,17 +564,20 @@ body {
     transparent
   );
   pointer-events: none;
-  transform: skewX(-20deg);
+  transform: skewX(-25deg); /* Çapraz cam yansıması */
+  animation: glass-shimmer 6s infinite ease-in-out; /* Periyodik parlama */
 }
 
-/* Basınca ışık sağa kayar */
-.btn-pressed::before {
-  animation: shimmer-slide 0.5s ease-in forwards !important;
+@keyframes glass-shimmer {
+  0% { left: -100%; }
+  35% { left: 200%; }  /* Işık yavaş ve zarifçe süzülerek geçer */
+  100% { left: 200%; } /* Bekler */
 }
 
-@keyframes shimmer-slide {
-  0%   { left: -100%; opacity: 1; }
-  100% { left: 150%;  opacity: 1; }
+/* Basılma durumu */
+.btn-pressed {
+  transform: scale(0.97);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .icon-max-glow {
@@ -938,15 +943,16 @@ body {
 
 /* Daily Card Content */
 .daily-card-content {
-  display: flex;
-  gap: 24px;
-  align-items: flex-start;
+  display: block; /* Flex yerine block ile float/sarmalama özelliğini açıyoruz */
+  position: relative;
 }
 
 .daily-card-image {
-  flex-shrink: 0;
+  float: left; /* Gazete stili sarmalama */
   width: 90px;
   height: 135px;
+  margin-right: 18px;
+  margin-bottom: 8px;
   position: relative;
   z-index: 1;
 }
@@ -981,8 +987,7 @@ body {
 }
 
 .daily-card-info {
-  flex: 1;
-  min-width: 0;
+  display: inline; /* Metnin resmin altından devam edebilmesi için */
   user-select: none;
   -webkit-user-select: none;
 }
@@ -1006,13 +1011,51 @@ body {
   font-size: 14px;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.9);
+  text-align: justify; /* Profesyonel görünüm */
 }
 
-/* Horoscope */
+/* Horoscope Revealed - Newspaper Style */
+.horoscope-revealed-content {
+  display: block; /* Flex yerine block kullanarak sarmalamayı (float) sağlıyoruz */
+  position: relative;
+  animation: fade-in 0.8s ease-out forwards;
+}
+
+.horoscope-mini-wheel {
+  float: left; /* Gazete stili yerleşim */
+  width: 110px;
+  height: 110px;
+  margin-right: 18px;
+  margin-bottom: 6px;
+  margin-top: -12px; /* Biraz daha yukarıda durması için */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.horoscope-mini-wheel::after {
+  content: '';
+  position: absolute;
+  width: 140%;
+  height: 140%;
+  background: radial-gradient(circle, rgba(0, 210, 255, 0.12) 0%, transparent 70%);
+  filter: blur(15px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.horoscope-info {
+  display: inline; /* Metnin çeyrekten devam etmesi için */
+}
+
 .horoscope-text {
   font-size: 14px;
-  line-height: 1.7;
+  line-height: 1.75;
   color: var(--text-secondary);
+  text-align: justify; /* Gazete havasını pekiştirir */
+  hyphens: auto;
 }
 
 /* Energy */
@@ -1148,20 +1191,199 @@ body {
   cursor: default;
 }
 
-.fortune-type-emoji {
-  font-size: 32px;
-  flex-shrink: 0;
+/* ============================================================
+   Premium Macro Card Design (Fortunes Page)
+   ============================================================ */
+.premium-macro-card {
+  position: relative;
+  overflow: hidden; /* Sağdaki dev ikon dilediği gibi taşsın ama dışarı çıkmasın */
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  min-height: 120px;
+  padding: 24px;
 }
 
-.fortune-type-info {
-  flex: 1;
+.premium-info {
+  z-index: 2;
+  max-width: 65%; /* Sağdaki ikona alan bırakıyoruz */
+  text-align: left;
 }
 
-.fortune-type-name {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 2px;
+.premium-info .fortune-type-name {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  margin-bottom: 6px;
+  color: var(--text-primary);
 }
+
+.premium-info .fortune-type-desc {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.card-status-area {
+  position: absolute;
+  top: 24px;
+  right: 20px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+}
+
+/* Macro Art Container - Sağ Tarafa Yaslı Filigran */
+.macro-art-container {
+  position: absolute;
+  right: -10px;
+  bottom: -20px;
+  z-index: 0;
+  pointer-events: none;
+  /* Container'a opacity vermiyoruz ki buhar da saydamlığa kurban gitmesin! */
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.premium-macro-card:active .macro-art-container,
+.premium-macro-card.clicked .macro-art-container {
+  transform: scale(1.05) rotate(-5deg) translateY(-10px); 
+}
+
+.macro-bg-icon {
+  font-size: 160px !important; /* DEVASA İKON */
+  display: inline-block;
+  opacity: 0.15; /* Sadece ikon silik olacak */
+  color: #b5ac9d; /* Alttaki emojilerin soluk, dumanlı mat rengi! Altın veya parlak değil! */
+  transform: rotate(-15deg) translateY(10px) translateX(20px); /* Hafif çapraz premium duruş */
+}
+
+.macro-bg-emoji {
+  font-size: 160px;
+  filter: grayscale(100%) brightness(200%) opacity(0.5);
+}
+
+/* ----------------------------------------------------
+   Macro Özelleştirmeleri: KAHVE FALI
+   ---------------------------------------------------- */
+.coffee-macro .macro-bg-icon {
+  color: #818cf8; /* Nebula Indigo - Morumsu Lacivert */
+  opacity: 0.8; 
+  filter: drop-shadow(0 0 20px rgba(129, 140, 248, 0.4)) drop-shadow(0 0 10px rgba(168, 85, 247, 0.3)); /* Hem lacivert hem mor ışıltı */
+  transform: rotate(-15deg) translateY(45px) translateX(-10px); 
+}
+
+.macro-coffee-steam {
+  position: absolute;
+  top: 0px; 
+  left: 8%; 
+  width: 80px;
+  height: 90px;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.macro-steam {
+  width: 10px;
+  background: linear-gradient(to top, transparent, rgba(168, 85, 247, 0.4), transparent); /* Leylak rengi mistik sis */
+  border-radius: 10px;
+  opacity: 0;
+  filter: blur(6px);
+  animation: macro-mist 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.s1 { animation-delay: 0s; height: 50px; }
+.s2 { animation-delay: 1.5s; height: 70px; margin-top: -15px; }
+.s3 { animation-delay: 2.8s; height: 40px; }
+
+@keyframes macro-mist {
+  0% { transform: translateY(20px) scaleX(1); opacity: 0; }
+  30% { opacity: 0.6; filter: blur(3px); }
+  70% { transform: translateY(-40px) scaleX(2.5); opacity: 0.3; filter: blur(7px); }
+  100% { transform: translateY(-70px) scaleX(3.5); opacity: 0; filter: blur(12px); }
+}
+
+/* ----------------------------------------------------
+   Macro Özelleştirmeleri: TAROT (Holografik Yelpaze)
+   ---------------------------------------------------- */
+.macro-fanned-cards {
+  position: relative;
+  width: 140px;
+  height: 160px;
+  transform: translateX(10px) translateY(10px);
+  animation: tarot-levitate 5s ease-in-out infinite alternate;
+}
+
+.macro-card-item {
+  position: absolute;
+  top: 0;
+  left: 35px;
+  width: 70px;
+  height: 110px;
+  border-radius: 6px;
+  border: 1px solid rgba(168, 85, 247, 0.6); /* Mor sınırlar */
+  /* Arkası Gözükmeyen, Tamamen OPAK/KATI yüzey */
+  background: linear-gradient(135deg, rgba(30, 15, 50, 0.98), rgba(70, 30, 100, 0.95)); 
+  box-shadow: inset 0 0 10px rgba(168, 85, 247, 0.3), 0 4px 6px rgba(0, 0, 0, 0.4);
+  transform-origin: bottom center;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.5s;
+}
+
+/* Kartın içindeki sihirli ince beyaz çerçeve detayları */
+.macro-card-item::after {
+  content: '';
+  position: absolute;
+  top: 5px; left: 5px; right: 5px; bottom: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.1); 
+  border-radius: 4px;
+}
+
+/* Sol Kart: Kenara Yatık */
+.card-left {
+  transform: rotate(-25deg) translateX(-20px) translateY(15px);
+  z-index: 1;
+}
+
+/* Orta Kart: Zirvede, En Büyük, Dik */
+.card-center {
+  transform: rotate(0deg) translateY(0px) scale(1.05);
+  z-index: 3;
+  border-color: rgba(168, 85, 247, 0.6);
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.2), inset 0 0 15px rgba(168, 85, 247, 0.3);
+}
+
+/* Sağ Kart: O Da Kenara Yatık */
+.card-right {
+  transform: rotate(25deg) translateX(20px) translateY(15px);
+  z-index: 2;
+}
+
+@keyframes tarot-levitate {
+  0% { transform: translateX(20px) translateY(30px) rotate(3deg); }
+  100% { transform: translateX(20px) translateY(10px) rotate(-3deg); }
+}
+
+.macro-tarot-shadow {
+  position: absolute;
+  bottom: -5px; 
+  left: 35%;
+  width: 90px;
+  height: 14px;
+  background: rgba(168, 85, 247, 0.6); /* Mor gölge rengi */
+  border-radius: 50%;
+  filter: blur(12px);
+  animation: macro-shadow 5s ease-in-out infinite alternate;
+}
+
+@keyframes macro-shadow {
+  0% { transform: translateX(-50%) scaleX(1); opacity: 0.5; }
+  100% { transform: translateX(-50%) scaleX(0.4); opacity: 0.1; }
+}
+
+/* Basılma (Touch/Active) Animasyonu: Yelpaze açılır! */
+.premium-macro-card:active .card-left, .premium-macro-card.clicked .card-left { transform: rotate(-35deg) translateX(-30px) translateY(20px); }
+.premium-macro-card:active .card-right, .premium-macro-card.clicked .card-right { transform: rotate(35deg) translateX(30px) translateY(20px); }
+.premium-macro-card:active .card-center, .premium-macro-card.clicked .card-center { transform: translateY(-10px) scale(1.1); border-color: rgba(255, 255, 255, 0.7); box-shadow: 0 0 20px rgba(168, 85, 247, 0.4), inset 0 0 20px rgba(168, 85, 247, 0.4); }
 
 .fortune-type-desc {
   font-size: 12px;
@@ -4574,18 +4796,20 @@ input[type=number] {
 }
 
 .zodiac-tag-label {
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
   color: #fff;
-  opacity: 0.85;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  line-height: normal;
+  letter-spacing: 0.15em; /* Daha geniş ve asil bir duruş */
+  line-height: 1.2;
 }
 
 .element-tag-label {
-  font-size: 10px;
-  opacity: 0.5;
+  font-size: 9px;
+  font-weight: 500;
   color: var(--text-muted);
-  line-height: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.7;
+  margin-top: -1px;
 }

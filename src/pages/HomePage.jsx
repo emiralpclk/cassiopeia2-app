@@ -16,7 +16,7 @@ import tarotBack from '../assets/tarot_back_mockup.png';
 const ENERGY_COLOR_MAP = {
   'Mavi': '#007AFF', 'Kırmızı': '#FF3B30', 'Yeşil': '#34C759',
   'Mor': '#AF52DE', 'Sarı': '#FFCC00', 'Turuncu': '#FF9500',
-  'Pembe': '#FF2D55', 'Turkuaz': '#5AC8FA', 'Gümüş': '#8E8E93', 'Beyaz': '#FFFFFF'
+  'Pembe': '#FF7EB9', 'Turkuaz': '#5AC8FA', 'Gümüş': '#8E8E93', 'Beyaz': '#FFFFFF'
 };
 
 export default function HomePage() {
@@ -276,7 +276,7 @@ export default function HomePage() {
             <div className="zodiac-info-tag">
               <span className="zodiac-tag-label">{userZodiac?.name || 'Gezgin'}</span>
               <span className="element-tag-label">
-                {activeElement?.id ? `(${activeElement.id.charAt(0).toUpperCase() + activeElement.id.slice(1)})` : '(Yıldız)'}
+                {userZodiac?.element ? `${userZodiac.element} Elementi` : 'Yıldız Ruhu'}
               </span>
             </div>
           </div>
@@ -369,7 +369,7 @@ export default function HomePage() {
             <div className="card-closed-state horoscope-closed">
               <ZodiacWheel
                 highlightSign={userZodiac?.id || 'scorpio'}
-                accentColor={elementAccentColor}
+                accentColor="#00d2ff"
               />
               <p className="card-mystery-text">Yıldızlar fısıldıyor...</p>
               <p className="card-mystery-sub">{getTapText(cardTaps.horoscope || 0)}</p>
@@ -382,11 +382,23 @@ export default function HomePage() {
               <MysticIcon name={userZodiac?.id || 'stars'} color="#fff" size={20} />
               <h3>Günlük Burç Yorumun</h3>
             </div>
-            {loading ? (
-              <p className="horoscope-text shimmer">Yükleniyor...</p>
-            ) : (
-              <p className="horoscope-text">{horoscope || 'Yorum hazır değil.'}</p>
-            )}
+            
+            <div className="horoscope-revealed-content">
+              <div className="horoscope-mini-wheel">
+                <ZodiacWheel
+                  size={110}
+                  highlightSign={userZodiac?.id || 'scorpio'}
+                  accentColor="#00d2ff"
+                />
+              </div>
+              <div className="horoscope-info">
+                {loading ? (
+                  <p className="horoscope-text shimmer">Yükleniyor...</p>
+                ) : (
+                  <p className="horoscope-text">{horoscope || 'Yorum hazır değil.'}</p>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>

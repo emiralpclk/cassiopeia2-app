@@ -37,12 +37,12 @@ function arcPath(cx, cy, r, startDeg, endDeg) {
   return `M${cx},${cy} L${s.x},${s.y} A${r},${r} 0 ${large},1 ${e.x},${e.y} Z`;
 }
 
-export default function ZodiacWheel({ highlightSign = 'scorpio' }) {
-  const SIZE  = 280;
-  const CX    = SIZE / 2;
-  const CY    = SIZE / 2;
+export default function ZodiacWheel({ highlightSign = 'scorpio', accentColor = '#00d2ff', size = 280 }) {
+  const VIEW_SIZE = 280; // Koordinat sistemi büyüklüğü
+  const CX    = VIEW_SIZE / 2;
+  const CY    = VIEW_SIZE / 2;
 
-  // Halka yarıçapları
+  // Halka yarıçapları (VIEW_SIZE'a göre sabit)
   const R_OUTER  = 125; // dış sınır
   const R_NAME   = 112; // isim konumu
   const R_MID    = 96;  // orta halka (ayrıcı çizgi)
@@ -52,16 +52,16 @@ export default function ZodiacWheel({ highlightSign = 'scorpio' }) {
 
   const DIM   = 'rgba(255,255,255,0.18)';
   const FAINT = 'rgba(255,255,255,0.07)';
-  const GOLD  = 'rgba(210,180,80,1)';
+  const MIDNIGHT = '#000000'; // Tam siyah yazı tonu
   const SILVER = 'rgba(255,255,255,0.55)';
-  const NAVY  = '#283593'; // Koyu lacivert parıltı
+  const NAVY  = accentColor; // Kullanıcının buz mavisi tercihi veya element rengi
 
   return (
     <div className="zodiac-wheel-container">
       <svg
-        width={SIZE}
-        height={SIZE}
-        viewBox={`0 0 ${SIZE} ${SIZE}`}
+        width={size}
+        height={size}
+        viewBox={`0 0 ${VIEW_SIZE} ${VIEW_SIZE}`}
         className="zodiac-wheel-svg"
         style={{ fontFamily: "'Georgia', 'Times New Roman', serif", overflow: 'visible' }}
       >
@@ -177,10 +177,10 @@ export default function ZodiacWheel({ highlightSign = 'scorpio' }) {
               textAnchor="middle"
               fontSize={isActive ? 18 : 14}
               fontFamily="'Noto Sans Symbols 2', 'Segoe UI Symbol', 'Apple Symbols', serif"
-              fill={isActive ? GOLD : SILVER}
+              fill={isActive ? MIDNIGHT : SILVER}
               style={{
                 fontVariantEmoji: 'text',
-                filter: isActive ? `drop-shadow(0 0 5px ${GOLD})` : 'none',
+                filter: isActive ? `drop-shadow(0 0 3px ${MIDNIGHT})` : 'none',
               }}
             >
               {/* \uFE0E = text variation selector, emoji olarak render edilmemesi için */}
@@ -208,7 +208,7 @@ export default function ZodiacWheel({ highlightSign = 'scorpio' }) {
               fontSize="7"
               fontFamily="'Georgia', serif"
               letterSpacing="0.8"
-              fill={isActive ? GOLD : 'rgba(255,255,255,0.3)'}
+              fill={isActive ? MIDNIGHT : 'rgba(255,255,255,0.3)'}
               transform={`rotate(${rotation}, ${pt.x}, ${pt.y})`}
             >
               {z.abbr.toUpperCase()}
@@ -222,7 +222,7 @@ export default function ZodiacWheel({ highlightSign = 'scorpio' }) {
           textAnchor="middle"
           fontSize="24"
           fontFamily="'Georgia', serif"
-          fill="rgba(210,180,80,0.6)"
+          fill="rgba(78, 107, 138, 0.6)"
           style={{ fontVariantEmoji: 'text' }}
         >
           {/* Güneş sembolü text modu */}

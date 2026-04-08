@@ -2,12 +2,11 @@ import { useState, useEffect } from 'react';
 import { useAppState, useAppDispatch } from '../../context/AppContext';
 import TarotSelection from './TarotSelection';
 import TarotResult from './TarotResult';
-import { TAROT_SLOTS } from '../../utils/constants';
+import FortuneProfileSelector from '../../components/FortuneProfileSelector';
 
 export default function TarotPage() {
   const { currentFortune, user } = useAppState();
   const dispatch = useAppDispatch();
-  const [userName, setUserName] = useState(user?.name || '');
   const [intent, setIntent] = useState('');
 
   // Use global tarotStep
@@ -30,8 +29,8 @@ export default function TarotPage() {
   };
 
   const handleStartRitual = () => {
-    if (!userName || !intent) return;
-    const formattedName = formatName(userName);
+    if (!user?.name || !intent) return;
+    const formattedName = formatName(user.name);
     dispatch({ type: 'SET_TAROT_INTENT', payload: { userName: formattedName, intent } });
   };
 
@@ -52,16 +51,11 @@ export default function TarotPage() {
       </div>
 
       <div className="intent-form" style={{ marginTop: '40px' }}>
-        <div style={{ marginBottom: '24px' }}>
-          <label style={{ display: 'block', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '8px', fontFamily: 'var(--font-label)', textTransform: 'uppercase' }}>Kimliğin</label>
-          <input 
-            type="text" 
-            className="intent-input" 
-            placeholder="İsmin nedir?"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-            style={{ height: '56px' }}
-          />
+        <div style={{ marginBottom: '8px' }}>
+          <label style={{ display: 'block', fontSize: '11px', color: 'var(--text-secondary)', marginBottom: '8px', fontFamily: 'var(--font-label)', textTransform: 'uppercase', letterSpacing: '0.1em', paddingLeft: '4px' }}>Kimliğin</label>
+          <div style={{ margin: '0 -20px', width: 'calc(100% + 40px)' }}>
+            <FortuneProfileSelector />
+          </div>
         </div>
 
         <div style={{ marginBottom: '32px' }}>
@@ -90,7 +84,7 @@ export default function TarotPage() {
 
         <button 
           className="step-button ritual-active" 
-          disabled={!userName || !intent}
+          disabled={!user?.name || !intent}
           onClick={handleStartRitual}
           style={{ width: '100%', justifyContent: 'center', boxShadow: '0 0 20px var(--accent-glow)' }}
         >

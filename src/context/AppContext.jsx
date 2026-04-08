@@ -15,7 +15,9 @@ import {
   getProfiles,
   setProfiles as saveProfiles,
   getActiveProfileId,
-  setActiveProfileId as saveActiveId
+  setActiveProfileId as saveActiveId,
+  getLifetimeStats,
+  incrementLifetimeStats
 } from '../services/storage';
 
 const AppContext = createContext(null);
@@ -47,6 +49,7 @@ const initialState = {
     tarotAnimated: false,
   },
   history: [],
+  lifetimeStats: { total: 0, coffee: 0, tarot: 0 },
   showApiKeyModal: !getApiKey(),
   showOnboarding: !getUserProfile(), 
   isLoading: false,
@@ -352,6 +355,9 @@ function appReducer(state, action) {
       clearHistory();
       return { ...state, history: [] };
 
+    case 'SET_LIFETIME_STATS':
+      return { ...state, lifetimeStats: action.payload };
+
     case 'SAVE_TO_HISTORY': {
       const type = action.payload?.type || 'coffee';
       const isCoffee = type === 'coffee';
@@ -369,8 +375,20 @@ function appReducer(state, action) {
       };
       
       saveToHistory(historyEntry); 
+      // Update lifetime asynchronously, but also update state optimistically
+      incrementLifetimeStats(type).catch(console.error);
+
       const newHistory = [historyEntry, ...state.history].slice(0, 5);
-      return { ...state, history: newHistory };
+      return { 
+        ...state, 
+        history: newHistory,
+        lifetimeStats: {
+          ...state.lifetimeStats,
+          total: state.lifetimeStats.total + 1,
+          coffee: isCoffee ? state.lifetimeStats.coffee + 1 : state.lifetimeStats.coffee,
+          tarot: !isCoffee ? state.lifetimeStats.tarot + 1 : state.lifetimeStats.tarot
+        }
+      };
     }
 
     default:
@@ -390,6 +408,7 @@ export function AppProvider({ children }) {
 
         const history = await getHistory();
         const savedFortune = await getCurrentFortune();
+        const lifetimeStats = await getLifetimeStats();
         
         if (!mounted) return;
 
@@ -397,6 +416,7 @@ export function AppProvider({ children }) {
         // Async items (history/fortune) need to be loaded here
         if (history && history.length) dispatch({ type: 'SET_HISTORY', payload: history.slice(0, 5) });
         if (savedFortune) dispatch({ type: 'RESTORE_FORTUNE', payload: savedFortune });
+        dispatch({ type: 'SET_LIFETIME_STATS', payload: lifetimeStats });
         
         // Modal logic
         const apiKey = getApiKey();

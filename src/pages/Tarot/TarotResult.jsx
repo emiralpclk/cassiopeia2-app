@@ -9,18 +9,29 @@ import OracleLoading from '../../components/OracleLoading';
 import Typewriter from '../../components/Typewriter';
 
 export default function TarotResult() {
-  const { currentFortune, apiKey, isTestMode } = useAppState();
+  const { currentFortune, apiKey, isTestMode, user } = useAppState();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { selectedTarotCards, tarotIntent, tarotResult, tarotAnimated } = currentFortune || {};
   
   const [resultData, setResultData] = useState(tarotResult || null);
   const [loading, setLoading] = useState(!tarotResult);
-  const [revealStep, setRevealStep] = useState(tarotAnimated ? 'complete' : 'ritual'); // ritual, past, present, future, complete
+  const [revealStep, setRevealStep] = useState(tarotAnimated ? 'complete' : 'ritual');
   const [showRitual, setShowRitual] = useState(true);
   const [minWaitDone, setMinWaitDone] = useState(false);
   const [error, setError] = useState(null);
   const hasRequested = useRef(false);
+
+  // Compute current age from birthDate
+  const computeAge = (bDate) => {
+    if (!bDate?.year) return null;
+    const today = new Date();
+    let age = today.getFullYear() - parseInt(bDate.year);
+    const m = today.getMonth() + 1;
+    if (m < parseInt(bDate.month) || (m === parseInt(bDate.month) && today.getDate() < parseInt(bDate.day))) age--;
+    return age;
+  };
+  const userAge = computeAge(user?.birthDate);
 
   useEffect(() => {
     if (!tarotIntent?.userName || !selectedTarotCards?.length) {
@@ -28,7 +39,6 @@ export default function TarotResult() {
       return;
     }
 
-    // If we already have a result, just show it
     if (tarotResult) {
       setResultData(tarotResult);
       if (tarotAnimated) {
@@ -39,13 +49,11 @@ export default function TarotResult() {
       }
     }
 
-    // Minimum Ritual Wait Timer
     const ritualTime = isTestMode ? 2000 : 10000;
     const timer = setTimeout(() => {
       setMinWaitDone(true);
     }, ritualTime);
 
-    // Initial Fetch (only if no result)
     if (!tarotResult && !hasRequested.current) {
       hasRequested.current = true;
       const actualIntent = tarotIntent?.intent || '';
@@ -61,7 +69,13 @@ export default function TarotResult() {
             await new Promise(r => setTimeout(r, 2000));
             result = getMockTarotResult(actualUserName);
           } else {
-            const prompt = buildEmeraldOraclePrompt(actualUserName, actualIntent, selectedTarotCards);
+            const userProfile = {
+              zodiac: user?.zodiac || null,
+              age: userAge ? `${userAge} yaşında` : null,
+              gender: user?.gender || null,
+              relationshipStatus: user?.relationshipStatus || null,
+            };
+            const prompt = buildEmeraldOraclePrompt(actualUserName, actualIntent, selectedTarotCards, userProfile);
             result = await callGemini(apiKey, prompt, { jsonMode: true });
           }
 
@@ -79,7 +93,7 @@ export default function TarotResult() {
     }
 
     return () => clearTimeout(timer);
-  }, [apiKey, isTestMode, tarotResult, tarotAnimated]); // Simplified deps
+  }, [apiKey, isTestMode, tarotResult, tarotAnimated]);
 
   // Reveal Logic
   useEffect(() => {

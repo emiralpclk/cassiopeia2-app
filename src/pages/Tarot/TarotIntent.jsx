@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useAppState, useAppDispatch } from '../../context/AppContext';
 import { TAROT_DECK } from '../../utils/constants';
+import FortuneProfileSelector from '../../components/FortuneProfileSelector';
 
 export default function TarotIntent() {
   const dispatch = useAppDispatch();
   const { user } = useAppState();
   const [intent, setIntent] = useState('');
-  const [userName, setUserName] = useState('');
   const [selected, setSelected] = useState([]);
 
   const handleCardClick = (card) => {
@@ -18,10 +18,11 @@ export default function TarotIntent() {
   };
 
   const handleStart = () => {
-    if (intent.trim() && userName.trim() && selected.length === 3) {
+    const activeUserName = user ? user.name : 'Misafir';
+    if (intent.trim() && selected.length === 3) {
        dispatch({ 
           type: 'SET_TAROT_INTENT', 
-          payload: { intent: intent.trim(), userName: userName.trim() } 
+          payload: { intent: intent.trim(), userName: activeUserName } 
        });
        dispatch({ type: 'SET_TAROT_SYNTHESIS_CARDS', payload: selected });
        dispatch({ type: 'SET_TAROT_STEP', payload: 'ritual' });
@@ -36,14 +37,12 @@ export default function TarotIntent() {
           <p>Kâhinin kartları senin için seçebilmesi için niyetini mühürle.</p>
        </div>
 
+       <div style={{ textAlign: 'left', marginBottom: '8px', paddingLeft: '8px' }}>
+          <h4 className="section-subtitle">Kimin İçin Bakılıyor?</h4>
+       </div>
+       <FortuneProfileSelector />
+
        <div className="intent-form-premium glass-card">
-          <input 
-             type="text" 
-             value={userName} 
-             onChange={(e) => setUserName(e.target.value)} 
-             placeholder="Adın veya bir mahlas" 
-             className="modal-input" 
-          />
           <textarea 
              value={intent} 
              onChange={(e) => setIntent(e.target.value)} 
@@ -72,17 +71,20 @@ export default function TarotIntent() {
 
        <button 
           className="step-button primary wide mt-4" 
-          disabled={!intent.trim() || !userName.trim() || selected.length < 3} 
+          disabled={!intent.trim() || selected.length < 3} 
           onClick={handleStart}
        >
           Ritüeli Başlat ({selected.length}/3)
        </button>
 
        <style dangerouslySetInnerHTML={{ __html: `
-          .tarot-ritual-intent { padding: 40px 20px; text-align: center; display: flex; flex-direction: column; height: 100vh; }
-          .intent-form-premium { padding: 24px; margin-bottom: 24px; }
-          .intent-form-premium textarea { width: 100%; height: 100px; background: none; border: none; color: var(--text-primary); font-family: inherit; font-size: 15px; resize: none; outline: none; margin-top: 16px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 16px; }
+          .tarot-ritual-intent { padding: 40px 20px; text-align: center; display: flex; flex-direction: column; height: 100vh; overflow-y: auto; overflow-x: hidden; }
+          .intent-form-premium { padding: 24px; margin-bottom: 24px; border-radius: 24px; }
+          .intent-form-premium textarea { width: 100%; height: 100px; background: none; border: none; color: var(--text-primary); font-family: inherit; font-size: 15px; resize: none; outline: none; }
           .section-subtitle { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-secondary); margin-bottom: 12px; text-align: left; }
+          
+          /* Kart seçiminde ve genel akışta padding/boşluk ayarlamaları */
+          .tarot-ritual-intent::-webkit-scrollbar { display: none; }
        `}} />
     </div>
   );

@@ -14,6 +14,7 @@ const KEYS = {
   ONBOARDING_DONE: 'cassiopeia_onboarding_done',
   CURRENT_FORTUNE: 'cassiopeia_current_fortune',
   TEST_MODE: 'cassiopeia_test_mode',
+  LIFETIME_STATS: 'cassiopeia_lifetime_stats',
 };
 
 // Configure localforage
@@ -214,5 +215,46 @@ export async function getCurrentFortune() {
 export async function clearCurrentFortune() {
   try {
     await localforage.removeItem(KEYS.CURRENT_FORTUNE);
+  } catch {}
+}
+
+// Lifetime Statistics
+export async function getLifetimeStats() {
+  try {
+    const data = await localforage.getItem(KEYS.LIFETIME_STATS);
+    if (!data || data.total === 0) {
+      // Seed from existing history
+      const history = await getHistory();
+      if (history && history.length > 0) {
+        const seedStats = {
+          total: history.length,
+          coffee: history.filter(h => h.type === 'coffee').length,
+          tarot: history.filter(h => h.type === 'tarot').length
+        };
+        await localforage.setItem(KEYS.LIFETIME_STATS, seedStats);
+        return seedStats;
+      }
+    }
+    return data || { total: 0, coffee: 0, tarot: 0 };
+  } catch { return { total: 0, coffee: 0, tarot: 0 }; }
+}
+
+export async function incrementLifetimeStats(type) {
+  try {
+    const stats = await getLifetimeStats();
+    stats.total += 1;
+    if (type === 'coffee') stats.coffee += 1;
+    if (type === 'tarot') stats.tarot += 1;
+    await localforage.setItem(KEYS.LIFETIME_STATS, stats);
+    return stats;
+  } catch (e) {
+    return { total: 0, coffee: 0, tarot: 0 };
+  }
+}
+
+export async function clearAllData() {
+  try {
+    localStorage.clear();
+    await localforage.clear();
   } catch {}
 }

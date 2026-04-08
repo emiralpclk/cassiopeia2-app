@@ -149,7 +149,7 @@ KATMAN 7 — ANLATIM KURALLARI:
 // EXPORT: Prompt builders
 // ============================================================
 
-export function buildCoffeeGeneralPrompt(intent, zodiac, ageRange, relationshipStatus) {
+export function buildCoffeeGeneralPrompt(intent, zodiac, age, relationshipStatus, gender) {
   return `${CASSIOPEIA_PERSONA}
 
 ${LAYER_1_PHYSICAL}
@@ -159,11 +159,12 @@ ${LAYER_4_ENERGY}
 ${LAYER_5_ARCHETYPES}
 ${LAYER_7_NARRATION}
 
-KATMAN 6 — KİŞİSELLEŞTİRME:
-- Kullanıcının burcu: ${zodiac}
-- Yaş aralığı: ${ageRange}
-- İlişki durumu: ${relationshipStatus}
-- Niyeti: "${intent}"
+KATMAN 6 — KİŞİSEL ARKA PLAN (Bu bilgileri astroloji raporu olarak tekrarlama. Yorumunu derinleştirmek ve kişiye özel örnekler vermek için arka plan bilgisi olarak kullan):
+- Burç: ${zodiac || 'bilinmiyor'}
+- Yaş: ${age || 'bilinmiyor'}
+- Cinsiyet: ${gender || 'bilinmiyor'}
+- İlişki Durumu: ${relationshipStatus || 'bilinmiyor'}
+- Niyet: "${intent}"
 
 GÖREV: Fincan fotoğraflarına bak ve GENEL bir fal yorumu yap.
 ÖNEMLİ: Sembollerin detaylı anlamlarını zaten kullanıcı başka yerde görüyor. Sen burada sadece bu sembollerin yarattığı GENEL AURAYI ve NİYETE DAİR ANA MESAJI anlat. 
@@ -171,14 +172,16 @@ FALIN BOYUTU: Çok kısa, vurucu, öz ve öncekine göre yaklaşık %50 DAHA KIS
 Yanıtını düz metin olarak ver, markdown kullanma.`;
 }
 
-export function buildCombinedDetailsPrompt(intent, zodiac, relationshipStatus) {
+export function buildCombinedDetailsPrompt(intent, zodiac, relationshipStatus, age, gender) {
   return `${CASSIOPEIA_PERSONA}
 
 GÖREVİN: Kullanıcının kahve fincanı fotoğraflarını 4 ana başlıkta analiz et ve sonucu SADECE JSON formatında döndür.
 
-Kullanıcı Bilgileri:
-- Burç: ${zodiac}
-- İlişki Durumu: ${relationshipStatus}
+KİŞİSEL ARKA PLAN (Bu bilgileri astroloji raporu olarak tekrarlama. Yorumunu derinleştirmek için arka plan bilgisi olarak kullan):
+- Burç: ${zodiac || 'bilinmiyor'}
+- Yaş: ${age || 'bilinmiyor'}
+- Cinsiyet: ${gender || 'bilinmiyor'}
+- İlişki Durumu: ${relationshipStatus || 'bilinmiyor'}
 - Niyet: "${intent}"
 
 Lütfen şu formatta bir JSON döndür:
@@ -213,7 +216,7 @@ SADECE JSON döndür, başka bir şey yazma:
 }`;
 }
 
-export function buildTarotSynthesisPrompt(coffeeJSON, intent, zodiac, ageRange, relationshipStatus, card1, card2, card3) {
+export function buildTarotSynthesisPrompt(coffeeJSON, intent, zodiac, age, relationshipStatus, gender, card1, card2, card3) {
   return `${CASSIOPEIA_PERSONA}
 
 Sen az önce bu kullanıcının kahve fincanını yorumladın. Şimdi falı derinleştirmek için 
@@ -222,11 +225,12 @@ Sen az önce bu kullanıcının kahve fincanını yorumladın. Şimdi falı deri
 KAHVE FALI VERİSİ:
 ${typeof coffeeJSON === 'string' ? coffeeJSON : JSON.stringify(coffeeJSON)}
 
-KULLANICI BİLGİLERİ:
+KULLANICI ARKA PLAN BİLGİSİ (astroloji raporu olarak tekrarlama, sadece yorumu derinleştir):
 - Niyet: "${intent}"
-- Burç: ${zodiac}
-- Yaş: ${ageRange}
-- İlişki durumu: ${relationshipStatus}
+- Burç: ${zodiac || 'bilinmiyor'}
+- Yaş: ${age || 'bilinmiyor'}
+- Cinsiyet: ${gender || 'bilinmiyor'}
+- İlişki Durumu: ${relationshipStatus || 'bilinmiyor'}
 
 ÇEKİLEN TAROT KARTLARI:
 1. Geçmiş: ${card1?.nameTr || ''} (${card1?.name || ''}) — ${card1?.meaning || ''}
@@ -282,16 +286,23 @@ KİMLİĞİN VE ÜSLUBUN:
 - Eğer kart kötüyse açıkça uyar ("Körü körüne inandığın biri var", "Kendini kandırıyorsun"). İyiyse net söyle ("Beklediğin o haber nihayet geliyor").
 - Yorumların psikolojik olarak isabetli, samimi ve "Nereden bildi?" dedirtecek kadar net olmalı. Emoji kullanma.`;
 
-export function buildEmeraldOraclePrompt(userName, intent, cards) {
+export function buildEmeraldOraclePrompt(userName, intent, cards, profile = {}) {
   const cardPast = cards.find(c => c.slot === 'past');
   const cardPresent = cards.find(c => c.slot === 'present');
   const cardFuture = cards.find(c => c.slot === 'future');
+
+  const profileContext = `ARKA PLAN KİŞİSEL VERİSİ (Bu bilgileri astroloji raporu olarak tekrarlama. Sadece yorumlarını derinleştirmek, kişiye özel örnekler vermek ve sembolleri daha isabetli okumak için arka plan bilgisi olarak kullan):
+- Burç: ${profile.zodiac || 'bilinmiyor'}
+- Yaş: ${profile.age || 'bilinmiyor'}
+- Cinsiyet: ${profile.gender || 'bilinmiyor'}
+- İlişki Durumu: ${profile.relationshipStatus || 'bilinmiyor'}`;
 
   return `${EMERALD_ORACLE_PERSONA}
 
 KULLANICI BİLGİLERİ:
 - İsim: ${userName}
 - Niyet/Odak: "${intent}"
+${profileContext}
 
 KARTLAR VE YUVALAR (SLOTS):
 1. GEÇMİŞ YUVASI: ${cardPast?.nameTr || ''} (${cardPast?.name || ''}) — ${cardPast?.meaning || ''}
@@ -314,3 +325,4 @@ YANIT FORMATI (ÖNEMLİ: SADECE GEÇERLİ JSON):
 
 DİKKAT: JSON anahtarları (past, present, future, seal) mutlaka İNGİLİZCE olmalı. Değerler ise TÜRKÇE olmalı. Başka metin veya markdown ekleme.`;
 }
+

@@ -59,12 +59,26 @@ function ResultsPage() {
     };
   }, [currentFortune?.tabData?.symbols, currentFortune?.coffeeAnimated, currentFortune?.symbolsAnimated, revealStep]); 
 
-  // Mark details as animated when visiting details tab
+  // Mark details as animated — but AFTER the stagger completes
+  const [visibleCards, setVisibleCards] = useState(currentFortune?.detailsAnimated ? 4 : 0);
+
   useEffect(() => {
-    if (activeTab === 'details' && currentFortune?.tabData?.details) {
-      dispatch({ type: 'MARK_DETAILS_ANIMATED' });
+    if (activeTab === 'details' && currentFortune?.tabData?.details && !currentFortune?.detailsAnimated) {
+      // Reveal cards one by one, 2s apart
+      setVisibleCards(0);
+      const timers = [0, 1, 2, 3].map((i) =>
+        setTimeout(() => setVisibleCards(i + 1), i * 2000)
+      );
+      // Mark as animated after last card
+      const doneTimer = setTimeout(() => {
+        dispatch({ type: 'MARK_DETAILS_ANIMATED' });
+      }, 4 * 2000);
+      return () => { timers.forEach(clearTimeout); clearTimeout(doneTimer); };
     }
-  }, [activeTab, currentFortune?.tabData?.details]);
+    if (currentFortune?.detailsAnimated) {
+      setVisibleCards(4);
+    }
+  }, [activeTab, currentFortune?.tabData?.details, currentFortune?.detailsAnimated]);
 
 
 
@@ -93,12 +107,7 @@ function ResultsPage() {
     };
   }, []);
 
-  // Update animated flags when switching to tarot tab
-  useEffect(() => {
-    if (activeTab === 'tarot' && currentFortune?.synthesisResult) {
-       dispatch({ type: 'MARK_SYNTHESIS_ANIMATED' });
-    }
-  }, [activeTab, currentFortune?.synthesisResult]);
+  // MARK_SYNTHESIS_ANIMATED is now handled via Typewriter's onFinish callback below
 
   const TABS = [
     { id: 'overview', label: 'Genel Bakış', icon: '☕' },
@@ -159,7 +168,18 @@ function ResultsPage() {
       } else {
         const zodiac = user?.zodiac || '';
         const relationship = user?.relationshipStatus || '';
+        const gender = user?.gender || '';
         const intent = currentFortune?.intent || '';
+        const computeAge = (bDate) => {
+          if (!bDate?.year) return null;
+          const today = new Date();
+          let age = today.getFullYear() - parseInt(bDate.year);
+          const m = today.getMonth() + 1;
+          if (m < parseInt(bDate.month) || (m === parseInt(bDate.month) && today.getDate() < parseInt(bDate.day))) age--;
+          return age;
+        };
+        const userAge = computeAge(user?.birthDate);
+        const ageStr = userAge ? `${userAge} yaşında` : '';
         
         if (tabId === 'overview') {
           result = await callGemini(apiKey, buildCoffeeSymbolsPrompt(), {
@@ -168,7 +188,7 @@ function ResultsPage() {
             signal,
           });
         } else {
-          result = await callGemini(apiKey, buildCombinedDetailsPrompt(intent, zodiac, relationship), {
+          result = await callGemini(apiKey, buildCombinedDetailsPrompt(intent, zodiac, relationship, ageStr, gender), {
             images: currentFortune?.images,
             jsonMode: true,
             signal,
@@ -345,22 +365,30 @@ Kısa ve öz yanıt ver. Türkçe. Markdown kullanma.`;
       
       return (
         <div className="details-vertical-list">
-          <div className="detail-card stagger-item" style={{ animationDelay: isAnimated ? '0s' : '0s' }}>
-            <h3>⏪ Geçmiş</h3>
-            <p>{d.past}</p>
-          </div>
-          <div className="detail-card stagger-item" style={{ animationDelay: isAnimated ? '0s' : '2.5s' }}>
-            <h3>⏩ Gelecek</h3>
-            <p>{d.future}</p>
-          </div>
-          <div className="detail-card stagger-item" style={{ animationDelay: isAnimated ? '0s' : '5s' }}>
-            <h3>💕 Aşk</h3>
-            <p>{d.love || 'Aşk hayatınızda derin bir sessizlik ve gözlem süreci hakim.'}</p>
-          </div>
-          <div className="detail-card stagger-item" style={{ animationDelay: isAnimated ? '0s' : '7.5s' }}>
-            <h3>💰 Kariyer & Para</h3>
-            <p>{d.career}</p>
-          </div>
+          {visibleCards >= 1 && (
+            <div className="detail-card fade-in">
+              <h3>⏪ Geçmiş</h3>
+              <p>{d.past}</p>
+            </div>
+          )}
+          {visibleCards >= 2 && (
+            <div className="detail-card fade-in">
+              <h3>⏩ Gelecek</h3>
+              <p>{d.future}</p>
+            </div>
+          )}
+          {visibleCards >= 3 && (
+            <div className="detail-card fade-in">
+              <h3>💕 Aşk</h3>
+              <p>{d.love || 'Aşk hayatınızda derin bir sessizlik ve gözlem süreci hakim.'}</p>
+            </div>
+          )}
+          {visibleCards >= 4 && (
+            <div className="detail-card fade-in">
+              <h3>💰 Kariyer & Para</h3>
+              <p>{d.career}</p>
+            </div>
+          )}
         </div>
       );
     }
@@ -403,6 +431,12 @@ Kısa ve öz yanıt ver. Türkçe. Markdown kullanma.`;
               className="result-text" 
               text={syn} 
               animate={!currentFortune?.synthesisAnimated}
+              speed={30}
+              onFinish={() => {
+                if (!currentFortune?.synthesisAnimated) {
+                  dispatch({ type: 'MARK_SYNTHESIS_ANIMATED' });
+                }
+              }}
             />
           )}
         </div>

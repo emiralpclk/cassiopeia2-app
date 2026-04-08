@@ -19,9 +19,7 @@ function SynthesisResult() {
       runSynthesis();
     } else if (currentFortune?.synthesisResult) {
       setLoading(false);
-      if (!currentFortune.synthesisAnimated) {
-        dispatch({ type: 'MARK_SYNTHESIS_ANIMATED' });
-      }
+      // Note: MARK_SYNTHESIS_ANIMATED is handled by the Typewriter onFinish in ResultsPage
     }
     
     return () => {
@@ -29,11 +27,7 @@ function SynthesisResult() {
     };
   }, []);
 
-  useEffect(() => {
-    if (currentFortune?.synthesisResult && !currentFortune?.synthesisAnimated) {
-      dispatch({ type: 'MARK_SYNTHESIS_ANIMATED' });
-    }
-  }, [currentFortune?.synthesisResult]);
+  // Removed: premature MARK_SYNTHESIS_ANIMATED — now handled via Typewriter onFinish in ResultsPage
 
   async function runSynthesis() {
     // In test mode, we don't need apiKey
@@ -46,12 +40,23 @@ function SynthesisResult() {
         const result = getMockSynthesisResult();
         dispatch({ type: 'SET_SYNTHESIS_RESULT', payload: result });
       } else {
+        const computeAge = (bDate) => {
+          if (!bDate?.year) return null;
+          const today = new Date();
+          let age = today.getFullYear() - parseInt(bDate.year);
+          const m = today.getMonth() + 1;
+          if (m < parseInt(bDate.month) || (m === parseInt(bDate.month) && today.getDate() < parseInt(bDate.day))) age--;
+          return age;
+        };
+        const userAge = computeAge(user?.birthDate);
+
         const prompt = buildTarotSynthesisPrompt(
           currentFortune?.coffeeResult?.general || '',
           currentFortune?.intent || '',
           user?.zodiac || '',
-          user?.ageRange || '',
+          userAge ? `${userAge} yaşında` : '',
           user?.relationshipStatus || '',
+          user?.gender || '',
           currentFortune?.selectedTarotCards?.[0] || null,
           currentFortune?.selectedTarotCards?.[1] || null,
           currentFortune?.selectedTarotCards?.[2] || null
@@ -110,6 +115,11 @@ function SynthesisResult() {
             text={currentFortune.synthesisResult} 
             animate={!currentFortune?.synthesisAnimated}
             speed={30}
+            onFinish={() => {
+              if (!currentFortune?.synthesisAnimated) {
+                dispatch({ type: 'MARK_SYNTHESIS_ANIMATED' });
+              }
+            }}
           />
         )}
       </div>

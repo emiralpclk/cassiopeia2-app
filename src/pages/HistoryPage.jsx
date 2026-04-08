@@ -4,7 +4,7 @@ import { useState } from 'react';
 import ImageModal from '../components/ImageModal';
 
 export default function HistoryPage() {
-  const { history } = useAppState();
+  const { history, lifetimeStats } = useAppState();
   const navigate = useNavigate();
   const [zoomedImage, setZoomedImage] = useState(null);
 
@@ -58,6 +58,20 @@ export default function HistoryPage() {
       <div className="page-header">
         <h1 className="page-title">Geçmiş</h1>
         <p className="page-subtitle">Önceki falların (Son 5 Kayıt)</p>
+      </div>
+
+      {/* Global Stats at the Top */}
+      <div className="profile-stats" style={{ marginBottom: '30px', marginTop: '0' }}>
+        <div className="stat-item">
+          <span className="material-symbols-outlined" style={{ fontSize: '18px', color: 'var(--accent)' }}>coffee</span>
+          <span className="stat-number">{lifetimeStats.coffee}</span>
+          <span className="stat-label">Kahve Falı</span>
+        </div>
+        <div className="stat-item" style={{ borderLeft: '1px solid rgba(255,255,255,0.05)' }}>
+          <span className="material-symbols-outlined" style={{ fontSize: '18px', color: 'var(--accent)' }}>history</span>
+          <span className="stat-number">{lifetimeStats.total}</span>
+          <span className="stat-label">Toplam Fal</span>
+        </div>
       </div>
 
       {history.length === 0 ? (

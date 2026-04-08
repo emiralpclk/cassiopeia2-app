@@ -32,11 +32,22 @@ function AnalyzingStep() {
         generalResult = mock.general;
         symbolsResult = { semboller: mock.semboller };
       } else {
+        const computeAge = (bDate) => {
+          if (!bDate?.year) return null;
+          const today = new Date();
+          let age = today.getFullYear() - parseInt(bDate.year);
+          const m = today.getMonth() + 1;
+          if (m < parseInt(bDate.month) || (m === parseInt(bDate.month) && today.getDate() < parseInt(bDate.day))) age--;
+          return age;
+        };
+        const userAge = computeAge(user?.birthDate);
+
         const generalPrompt = buildCoffeeGeneralPrompt(
           currentFortune.intent,
           user?.zodiac || 'bilinmiyor',
-          user?.ageRange || 'bilinmiyor',
-          user?.relationshipStatus || 'bilinmiyor'
+          userAge ? `${userAge} yaşında` : 'bilinmiyor',
+          user?.relationshipStatus || 'bilinmiyor',
+          user?.gender || 'bilinmiyor'
         );
 
         const symbolsPrompt = buildCoffeeSymbolsPrompt();

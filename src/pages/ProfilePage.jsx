@@ -69,21 +69,7 @@ export default function ProfilePage() {
         <h1 className="page-title">Profil</h1>
       </div>
 
-      {/* Global Stats at the Top */}
-      <div className="profile-stats" style={{ marginBottom: '30px', marginTop: '0' }}>
-        <div className="stat-item">
-          <span className="material-symbols-outlined" style={{ fontSize: '18px', color: 'var(--accent)' }}>history</span>
-          <span className="stat-number">{history.length}</span>
-          <span className="stat-label">Toplam Fal</span>
-        </div>
-        <div className="stat-item" style={{ borderLeft: '1px solid rgba(255,255,255,0.05)' }}>
-          <span className="material-symbols-outlined" style={{ fontSize: '18px', color: 'var(--accent)' }}>style</span>
-          <span className="stat-number">
-            {history.filter(h => h.tarotCards?.length > 0).length}
-          </span>
-          <span className="stat-label">Ritüel</span>
-        </div>
-      </div>
+
 
       {/* Multi-Profile Master List */}
       <div className="profile-section">
