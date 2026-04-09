@@ -3,9 +3,11 @@
  * Referans: Klasik natal chart stili, ince çizgiler, monokrom
  * - 3 halka: dış (isimler), orta (semboller), iç (süsleme)
  * - Sadece SVG stroke, fill yok
- * - Semboller Unicode text modunda render edilir (emoji değil)
+ * - Semboller MysticIcon SVG'leri ile tamamen grafik bazlı çizilir
  * - Kullanıcının burcu altın renkli segment ile vurgulanır
  */
+import MysticIcon from './MysticIcon';
+
 
 // Burç sırası ve verileri
 const ZODIAC_ORDER = [
@@ -168,24 +170,23 @@ export default function ZodiacWheel({ highlightSign = 'scorpio', accentColor = '
           const angleDeg = i * 30 + 15; // segment ortası
           const pt = polar(CX, CY, R_SYMBOL, angleDeg);
           const isActive = z.id === highlightSign;
+          const iconSize = isActive ? 18 : 14;
 
           return (
-            <text
+            <g
               key={`sym-${z.id}`}
-              x={pt.x}
-              y={pt.y + 6}
-              textAnchor="middle"
-              fontSize={isActive ? 18 : 14}
-              fontFamily="'Noto Sans Symbols 2', 'Segoe UI Symbol', 'Apple Symbols', serif"
-              fill={isActive ? MIDNIGHT : SILVER}
+              transform={`translate(${pt.x - iconSize / 2}, ${pt.y - iconSize / 2})`}
               style={{
-                fontVariantEmoji: 'text',
                 filter: isActive ? `drop-shadow(0 0 3px ${MIDNIGHT})` : 'none',
               }}
             >
-              {/* \uFE0E = text variation selector, emoji olarak render edilmemesi için */}
-              {z.symbol}{'\uFE0E'}
-            </text>
+              <MysticIcon 
+                name={z.id} 
+                color={isActive ? MIDNIGHT : SILVER} 
+                size={iconSize} 
+                glow={false} 
+              />
+            </g>
           );
         })}
 
