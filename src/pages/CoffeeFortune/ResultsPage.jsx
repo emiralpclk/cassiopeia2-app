@@ -63,7 +63,7 @@ function ResultsPage() {
   const [visibleCards, setVisibleCards] = useState(currentFortune?.detailsAnimated ? 4 : 0);
 
   useEffect(() => {
-    if (activeTab === 'details' && currentFortune?.tabData?.details && !currentFortune?.detailsAnimated) {
+    if (activeTab === 'details' && detailsRevealStep === 'ready' && currentFortune?.tabData?.details && !currentFortune?.detailsAnimated) {
       // Reveal cards one by one, 2s apart
       setVisibleCards(0);
       const timers = [0, 1, 2, 3].map((i) =>
@@ -78,7 +78,7 @@ function ResultsPage() {
     if (currentFortune?.detailsAnimated) {
       setVisibleCards(4);
     }
-  }, [activeTab, currentFortune?.tabData?.details, currentFortune?.detailsAnimated]);
+  }, [activeTab, detailsRevealStep, currentFortune?.tabData?.details, currentFortune?.detailsAnimated]);
 
 
 

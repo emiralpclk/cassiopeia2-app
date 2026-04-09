@@ -373,6 +373,7 @@ export default function TarotSelection({ step }) {
                 zIndex: 22 - index,
                 left: '50%',
                 top: '20px',
+                pointerEvents: isSelected ? 'none' : 'auto',
               }}
             >
               <div className="tarot-card-shimmer"></div>
