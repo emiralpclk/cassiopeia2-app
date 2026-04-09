@@ -30,22 +30,25 @@ export default function FortuneProfileSelector() {
 
   return (
     <div className="fortune-profile-selector" style={{ 
-      margin: '-140px 0 -130px 0', 
+      margin: '-110px 0 -110px 0', 
       display: 'flex', 
       overflowX: 'auto', 
       gap: '16px', 
-      padding: '150px 20px 160px 20px',
+      padding: '120px 20px 140px 20px',
       scrollSnapType: 'x mandatory',
       WebkitOverflowScrolling: 'touch',
       msOverflowStyle: 'none',
       scrollbarWidth: 'none',
       WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
-      maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)'
+      maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
+      pointerEvents: 'none' // Allow clicking through the extra padding
     }}>
       <style dangerouslySetInnerHTML={{__html: `
         .fortune-profile-selector::-webkit-scrollbar { display: none; }
-        .fortune-profile-selector .profile-identity-card {
+        .fortune-profile-selector .profile-identity-card,
+        .fortune-profile-selector .add-identity-card {
            overflow: visible !important;
+           pointer-events: auto !important; /* Re-enable for the cards themselves */
         }
         .fortune-profile-selector .identity-aura-glow {
           width: 200px !important;
@@ -53,7 +56,7 @@ export default function FortuneProfileSelector() {
           filter: blur(55px) !important;
           opacity: 0.65 !important;
           left: -35px !important;
-          z-index: 10 !important; /* Spill over if needed */
+          z-index: 10 !important;
         }
         /* Color core + subtle white outer glow */
         .fortune-profile-selector .aura-fire { background: radial-gradient(circle, #ff3c00 0%, rgba(255, 60, 0, 0.2) 40%, rgba(255,255,255,0.08) 75%, transparent 100%) !important; }

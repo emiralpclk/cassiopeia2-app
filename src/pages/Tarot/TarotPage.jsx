@@ -3,6 +3,8 @@ import { useAppState, useAppDispatch } from '../../context/AppContext';
 import TarotSelection from './TarotSelection';
 import TarotResult from './TarotResult';
 import FortuneProfileSelector from '../../components/FortuneProfileSelector';
+import OracleWhispers from '../../components/OracleWhispers';
+import CassiopeiaLogo from '../../components/CassiopeiaLogo';
 
 export default function TarotPage() {
   const { currentFortune, user } = useAppState();
@@ -38,13 +40,14 @@ export default function TarotPage() {
     { id: 'general', label: 'Genel Açılım', text: 'Hayatımdaki mevcut enerjiler ve yakın geleceğim hakkında genel bir rehberlik istiyorum.' },
     { id: 'love', label: 'Aşk & İlişki', text: 'İlişki durumum, kalbimdeki sorular ve aşk hayatımın gidişatı hakkında netlik arıyorum.' },
     { id: 'career', label: 'Kariyer & Para', text: 'İş hayatım, finansal durumum ve kariyer kararlarım için yol gösterici bir ışık istiyorum.' },
+    { id: 'social', label: 'Arkadaşlıklar', text: 'Yakın çevrem, dostluklarım ve sosyal hayatımdaki enerjiler hakkında derin bir farkındalık; ikili ilişkilerimdeki gizli dinamikler hakkında netlik arıyorum.' },
     { id: 'spiritual', label: 'Ruhsal Rehberlik', text: 'Şu an öğrenmem gereken ders nedir? Ruhsal gelişimim için neye odaklanmalıyım?' }
   ];
 
   const renderInput = () => (
     <div className="page tarot-input-page fade-in">
       <div className="page-header">
-        <h1 className="page-title" style={{ background: 'var(--accent-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+        <h1 className="page-title">
           Zümrüt Kâhini
         </h1>
         <p className="page-subtitle">Sana rehberlik etmesi için niyetini paylaş.</p>
@@ -79,17 +82,19 @@ export default function TarotPage() {
             value={intent}
             onChange={(e) => setIntent(e.target.value)}
             rows="4"
+            spellCheck="false"
           />
+          <OracleWhispers onSelect={setIntent} />
         </div>
 
         <button 
           className="step-button ritual-active" 
           disabled={!user?.name || !intent}
           onClick={handleStartRitual}
-          style={{ width: '100%', justifyContent: 'center', boxShadow: '0 0 20px var(--accent-glow)' }}
+          style={{ width: '100%', justifyContent: 'center', boxShadow: '0 0 20px var(--accent-glow)', gap: '8px' }}
         >
           Kâhine Bağlan
-          <span className="material-symbols-outlined">auto_awesome</span>
+          <CassiopeiaLogo size={24} color="currentColor" isLoading={false} />
         </button>
       </div>
     </div>

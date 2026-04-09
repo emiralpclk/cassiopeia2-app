@@ -4577,7 +4577,7 @@ input[type=number] {
   background: rgba(15, 18, 30, 0.5);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   display: flex;
   align-items: center;
   gap: 20px;
@@ -4812,4 +4812,174 @@ input[type=number] {
   letter-spacing: 0.12em;
   opacity: 0.7;
   margin-top: -1px;
+}
+
+/* ============================================================
+   Oracle Whispers — Vertical Endless Marquee
+   ============================================================ */
+
+.oracle-whispers-wrapper {
+  margin-top: 12px;
+  width: 100%;
+  cursor: pointer;
+}
+
+.oracle-whispers-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-family: var(--font-label);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  padding-left: 2px;
+}
+
+.oracle-whispers-label .material-symbols-outlined {
+  font-size: 14px;
+  color: var(--accent);
+  opacity: 0.7;
+}
+
+/* Container: fixed viewport, clips overflow, fades top & bottom */
+.oracle-whispers-container {
+  position: relative;
+  height: 168px; /* ~4 satır görünür */
+  overflow: hidden;
+
+  /* Fade mask: üstte ve altta daha agresif, ortada çok net okunur */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0,0,0,0) 5%,
+    rgba(0,0,0,0.15) 20%,
+    rgba(0,0,0,1.0) 45%,
+    rgba(0,0,0,1.0) 55%,
+    rgba(0,0,0,0.15) 80%,
+    rgba(0,0,0,0) 95%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0,0,0,0) 5%,
+    rgba(0,0,0,0.15) 20%,
+    rgba(0,0,0,1.0) 45%,
+    rgba(0,0,0,1.0) 55%,
+    rgba(0,0,0,0.15) 80%,
+    rgba(0,0,0,0) 95%,
+    transparent 100%
+  );
+}
+
+/* Track: animasyon JavaScript üzerinden kontrol edilir */
+.oracle-whispers-track {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hover/touch pause — wrapper üzerinden yönetilir ama track'e inline style yazılır */
+.oracle-whispers-wrapper:hover .oracle-whispers-track {
+  animation-play-state: paused;
+}
+
+@keyframes oracle-scroll {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-50%); } /* Toplam yüksekliğin yarısı = 1 tam liste */
+}
+
+/* Her bir soru satırı */
+.oracle-whisper-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 4px;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.oracle-whisper-item:hover,
+.oracle-whisper-item:active {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.oracle-whisper-item:active {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.whisper-dot {
+  font-size: 10px;
+  color: var(--accent);
+  opacity: 0.5;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.whisper-text {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  font-style: italic;
+  letter-spacing: 0.01em;
+  transition: color 0.2s;
+}
+
+.oracle-whisper-item:hover .whisper-text,
+.oracle-whisper-item:active .whisper-text {
+  color: var(--text-primary);
+}
+
+/* ============================================================
+   Typewriter Whispers — Kahve Falı Daktilosu
+   ============================================================ */
+
+.typewriter-whispers-wrapper {
+  margin-top: 12px;
+  width: 100%;
+  cursor: pointer;
+  padding: 8px 4px;
+  border-radius: 12px;
+  transition: background 0.3s ease;
+}
+
+.typewriter-whispers-wrapper:hover,
+.typewriter-whispers-wrapper:active {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.typewriter-container {
+  min-height: 48px; 
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.typewriter-text {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  font-style: italic;
+  letter-spacing: 0.01em;
+  transition: opacity 0.5s ease;
+  opacity: 1;
+}
+
+.typewriter-text.fading-out {
+  opacity: 0;
+}
+
+.typewriter-cursor {
+  display: inline-block;
+  color: var(--accent);
+  animation: blink 1s step-end infinite;
+  margin-left: 2px;
+  font-weight: 300;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }

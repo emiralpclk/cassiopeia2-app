@@ -286,9 +286,9 @@ export default function HomePage() {
       {/* Fal Baktır */}
       <button
         className={`quick-action-btn ${isFlashing ? 'btn-pressed' : ''}`}
-        onClick={() => handlePortalNavigate('/fallar/kahve')}
+        onClick={() => handlePortalNavigate('/fallar')}
       >
-        <MysticIcon name="coffee" color="#ffffff" size={24} className="icon-max-glow" />
+        <MysticIcon name="bolt" color="#ffffff" size={24} className="icon-max-glow" />
         <span>Fal Baktır</span>
         <MysticIcon name="arrow" color="#ffffff" size={20} className="arrow" />
       </button>
