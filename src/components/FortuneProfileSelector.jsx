@@ -30,39 +30,23 @@ export default function FortuneProfileSelector() {
 
   return (
     <div className="fortune-profile-selector" style={{ 
-      margin: '-110px 0 -110px 0', 
+      margin: '-20px 0 -20px 0', 
       display: 'flex', 
       overflowX: 'auto', 
       gap: '16px', 
-      padding: '120px 20px 140px 20px',
+      padding: '40px 20px 40px 20px',
       scrollSnapType: 'x mandatory',
       WebkitOverflowScrolling: 'touch',
       msOverflowStyle: 'none',
       scrollbarWidth: 'none',
-      WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
-      maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
-      pointerEvents: 'none' // Allow clicking through the extra padding
+      WebkitMaskImage: 'none',
+      maskImage: 'none'
     }}>
       <style dangerouslySetInnerHTML={{__html: `
         .fortune-profile-selector::-webkit-scrollbar { display: none; }
-        .fortune-profile-selector .profile-identity-card,
-        .fortune-profile-selector .add-identity-card {
-           overflow: visible !important;
-           pointer-events: auto !important; /* Re-enable for the cards themselves */
+        .fortune-profile-selector .profile-identity-card.active-identity {
+          box-shadow: 0 0 40px var(--accent-glow), 0 0 12px rgba(255, 255, 255, 0.08);
         }
-        .fortune-profile-selector .identity-aura-glow {
-          width: 200px !important;
-          height: 200px !important;
-          filter: blur(55px) !important;
-          opacity: 0.65 !important;
-          left: -35px !important;
-          z-index: 10 !important;
-        }
-        /* Color core + subtle white outer glow */
-        .fortune-profile-selector .aura-fire { background: radial-gradient(circle, #ff3c00 0%, rgba(255, 60, 0, 0.2) 40%, rgba(255,255,255,0.08) 75%, transparent 100%) !important; }
-        .fortune-profile-selector .aura-water { background: radial-gradient(circle, #00b4ff 0%, rgba(0, 180, 255, 0.2) 40%, rgba(255,255,255,0.08) 75%, transparent 100%) !important; }
-        .fortune-profile-selector .aura-earth { background: radial-gradient(circle, #50ff50 0%, rgba(80, 255, 80, 0.2) 40%, rgba(255,255,255,0.08) 75%, transparent 100%) !important; }
-        .fortune-profile-selector .aura-air { background: radial-gradient(circle, #f0f8ff 0%, rgba(240, 248, 255, 0.2) 40%, rgba(255,255,255,0.08) 75%, transparent 100%) !important; }
       `}} />
       {profiles.map(p => {
         const isActive = p.id === activeProfileId;
