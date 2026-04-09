@@ -60,6 +60,8 @@ export default function TypewriterWhispers({ onSelect }) {
     if (WHISPERS[currentIndex]) {
       // Daktilo bitmemiş olsa bile cümlenin tamamını form içine kopyala
       onSelect(WHISPERS[currentIndex]);
+      // Hemen sonraki cümleye atla
+      setCurrentIndex((prev) => (prev + 1) % WHISPERS.length);
     }
   };
 
@@ -70,8 +72,9 @@ export default function TypewriterWhispers({ onSelect }) {
           <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>edit_note</span>
           İç Sesin Diyor Ki...
         </div>
-        <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 'normal', fontStyle: 'italic' }}>
-          (Seçmek için dokun)
+        <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', color: 'var(--text-muted)', fontWeight: '500', opacity: 0.8 }}>
+          <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>touch_app</span>
+          Seçmek için dokun
         </span>
       </div>
       

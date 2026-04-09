@@ -288,7 +288,7 @@ export default function HomePage() {
         className={`quick-action-btn ${isFlashing ? 'btn-pressed' : ''}`}
         onClick={() => handlePortalNavigate('/fallar')}
       >
-        <MysticIcon name="bolt" color="#ffffff" size={24} className="icon-max-glow" />
+        <MysticIcon name="eye" color="#ffffff" size={24} className="icon-max-glow" />
         <span>Fal Baktır</span>
         <MysticIcon name="arrow" color="#ffffff" size={20} className="arrow" />
       </button>
@@ -325,7 +325,7 @@ export default function HomePage() {
           {/* AÇIK HAL */}
           <div className="flip-back">
             <div className="card-header">
-              <MysticIcon name="tarot" color="#fff" size={20} />
+              <MysticIcon name="mystic_hands" color="#fff" size={26} />
               <h3>Günün Kartı</h3>
             </div>
             {dailyCard ? (
@@ -379,14 +379,14 @@ export default function HomePage() {
           {/* AÇIK HAL */}
           <div className="flip-back" style={{ position: 'relative', overflow: 'hidden', zIndex: 1 }}>
             <div className="card-header">
-              <MysticIcon name={userZodiac?.id || 'stars'} color="#fff" size={20} />
+              <MysticIcon name={userZodiac?.id || 'stars'} color="#fff" size={26} />
               <h3>Günlük Burç Yorumun</h3>
             </div>
             
             <div className="horoscope-revealed-content">
               <div className="horoscope-mini-wheel">
                 <ZodiacWheel
-                  size={110}
+                  size={130}
                   highlightSign={userZodiac?.id || 'scorpio'}
                   accentColor="#00d2ff"
                 />

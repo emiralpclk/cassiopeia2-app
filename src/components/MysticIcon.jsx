@@ -153,13 +153,49 @@ export default function MysticIcon({ name, color = 'currentColor', size = 24, gl
         <path d="M10 12C10 12 9.5 13.5 10 14" opacity="0.5" strokeWidth="1" />
       </g>
     ),
+    'eye': (
+      <g strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M2 12C2 12 5 5 12 5C19 5 22 12 22 12C22 12 19 19 12 19C5 19 2 12 2 12Z" />
+        <circle cx="12" cy="12" r="3" />
+      </g>
+    ),
     'tarot': (
       <path 
-        d="M7 4H17C18 4 19 5 19 6V18C19 19 18 20 17 20H7C6 20 5 19 5 18V6C5 5 6 4 7 4ZM9 7H15M9 10H15M12 13V17M10 15H14" 
+        d="M7 4H17C18 4 19 5 19 6V18C19 18 18 20 17 20H7C6 20 5 18 5 18V6C5 5 6 4 7 4ZM9 7H15M9 10H15M12 13V17M10 15H14" 
         strokeWidth="1.2" 
         strokeLinecap="round" 
         strokeLinejoin="round"
       />
+    ),
+    'cards_fan': (
+      <g strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="4" y="6" width="10" height="14" rx="1.5" transform="rotate(-15 9 13)" opacity="0.5" />
+        <rect x="10" y="6" width="10" height="14" rx="1.5" transform="rotate(15 15 13)" opacity="0.5" />
+        <rect x="7" y="4" width="10" height="14" rx="1.5" />
+        <path d="M10 9H14M10 12H14" opacity="0.6" />
+      </g>
+    ),
+    'oracle_card': (
+      <g strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="6" y="4" width="12" height="16" rx="2" />
+        <path d="M14 10C14 10 13 8 11 8C9 8 8 10 8 12C8 14 9 16 11 16C13 16 14 14 14 14" />
+        <circle cx="12" cy="12" r="1.5" fill="currentColor" fillOpacity="0.2" />
+        <path d="M12 7V8M12 16V17M7 12H8M16 12H17" opacity="0.5" />
+      </g>
+    ),
+    'mystic_flame': (
+      <g strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2C12 2 17 6 17 11C17 14 14.8 16.5 12 16.5C9.2 16.5 7 14 7 11C7 6 12 2 12 2Z" />
+        <path d="M12 13C12 13 10.5 11 10.5 9.5C10.5 8.7 11.2 8 12 8C12.8 8 13.5 8.7 13.5 9.5C13.5 11 12 13 12 13Z" opacity="0.6" />
+        <path d="M8 20H16" opacity="0.4" strokeWidth="1" />
+      </g>
+    ),
+    'mystic_hands': (
+      <g strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="8" y="3" width="8" height="13" rx="1.5" />
+        <path d="M6 18C6 18 7 16 9 16H15C17 16 18 18 18 18C19 20 18 22 18 22H6C6 22 5 20 6 18Z" opacity="0.7" />
+        <path d="M10 7H14M10 10H14" opacity="0.5" />
+      </g>
     ),
     'edit': (
       <path 
