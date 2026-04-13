@@ -178,8 +178,9 @@ export default function NatalChartWheel({ profile }) {
   // ── Handle selections ──
   const handlePlanetTap = (key) => {
     setSelectedHouse(null);
-    setSelectedPlanet(prev => prev === key ? null : key);
+    setSelectedPlanet(key); // Her zaman seç, kapatma yok
   };
+
 
   const handleHouseTap = (houseNum) => {
     if (!hasHouses) return;
