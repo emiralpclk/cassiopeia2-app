@@ -9,6 +9,11 @@ import HomePage from './pages/HomePage';
 import FortunesPage from './pages/FortunesPage';
 import CoffeeFortunePage from './pages/CoffeeFortunePage';
 import TarotPage from './pages/Tarot/TarotPage';
+import AstrologyHub from './pages/Astrology/AstrologyHub';
+import AstrologyOnboarding from './pages/Astrology/AstrologyOnboarding';
+import AstrologyDashboard from './pages/Astrology/AstrologyDashboard';
+import AstrologyReading from './pages/Astrology/AstrologyReading';
+import GoldenHoursPage from './pages/Astrology/GoldenHoursPage';
 import HistoryPage from './pages/HistoryPage';
 import HistoryDetailPage from './pages/HistoryDetailPage';
 import DiscoverPage from './pages/DiscoverPage';
@@ -54,6 +59,11 @@ export default function AppContent() {
               <Route path="/fallar" element={<FortunesPage />} />
               <Route path="/fallar/kahve" element={<CoffeeFortunePage />} />
               <Route path="/fallar/tarot" element={<TarotPage />} />
+              <Route path="/astroloji" element={<AstrologyHub />} />
+              <Route path="/astroloji/giris" element={<AstrologyOnboarding />} />
+              <Route path="/astroloji/pano" element={<AstrologyDashboard />} />
+              <Route path="/astroloji/okuma" element={<AstrologyReading />} />
+              <Route path="/astroloji/altin-saatler" element={<GoldenHoursPage />} />
               <Route path="/gecmis" element={<HistoryPage />} />
               <Route path="/gecmis/:index" element={<HistoryDetailPage />} />
               <Route path="/kesfet" element={<DiscoverPage />} />

@@ -24,7 +24,18 @@ export default function HistoryPage() {
   const tarotHistory = history.filter(item => item.type === 'tarot');
 
   const HistoryCard = ({ item, index }) => (
-    <div key={item?.id || index} className="history-item stagger-item" onClick={() => navigate(`/gecmis/${index}`)}>
+    <div 
+      key={item?.id || index} 
+      className="history-item stagger-item" 
+      onClick={() => navigate(`/gecmis/${index}`)}
+      style={{ transition: 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)', cursor: 'pointer' }}
+      onTouchStart={e => { e.currentTarget.style.transform = 'scale(0.95)'; e.currentTarget.style.background = 'var(--bg-card-hover)'; e.currentTarget.style.borderColor = 'var(--accent-glow)'; }}
+      onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.background = 'var(--bg-card)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
+      onTouchCancel={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.background = 'var(--bg-card)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
+      onMouseDown={e => { e.currentTarget.style.transform = 'scale(0.95)'; e.currentTarget.style.background = 'var(--bg-card-hover)'; e.currentTarget.style.borderColor = 'var(--accent-glow)'; }}
+      onMouseUp={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.background = 'var(--bg-card)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
+      onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.background = 'var(--bg-card)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
+    >
       <div className="history-item-image" onClick={(e) => {
         const imgUrl = item?.images?.[0]?.dataUrl || item?.imageDataUrl;
         if (imgUrl) {

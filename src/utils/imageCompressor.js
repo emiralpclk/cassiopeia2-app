@@ -2,7 +2,7 @@
  * Canvas-based image compressor for coffee cup photos.
  * Reduces 10MB+ photos to ~200-400KB before sending to Gemini API.
  */
-export function compressImage(file, maxWidth = 800, quality = 0.6) {
+export function compressImage(file, maxWidth = 512, quality = 0.5) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (e) => {

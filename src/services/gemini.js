@@ -35,8 +35,8 @@ export async function callGemini(apiKey, prompt, options = {}) {
     }
   }
 
-  const GEMINI_MODEL = 'gemini-2.5-flash'; 
-  const API_BASE = 'https://generativelanguage.googleapis.com/v1/models';
+  const GEMINI_MODEL = 'gemini-3.1-flash-lite-preview'; 
+  const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
   const url = `${API_BASE}/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
   const parts = [{ text: prompt }];
 

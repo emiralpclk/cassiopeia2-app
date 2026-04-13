@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAppState, useAppDispatch } from '../context/AppContext';
 import { ZODIAC_SIGNS, GENDER_OPTIONS, RELATIONSHIP_STATUSES, getZodiacByDate } from '../utils/constants';
+import { TURKEY_CITIES, TURKEY_DISTRICTS } from '../utils/cities';
 import MysticIcon from './MysticIcon';
 
 export default function OnboardingFlow() {
@@ -15,6 +16,12 @@ export default function OnboardingFlow() {
   const [gender, setGender] = useState('');
   const [relationshipStatus, setRelationshipStatus] = useState('');
   const [showComplexOptions, setShowComplexOptions] = useState(false);
+
+  // Astroloji için yeni global alanlar
+  const [birthTime, setBirthTime] = useState('');
+  const [dontKnowTime, setDontKnowTime] = useState(false);
+  const [birthPlace, setBirthPlace] = useState('');
+  const [birthDistrict, setBirthDistrict] = useState('');
 
   const isAddingNew = profiles && profiles.length > 0 && !editingProfileId;
   const isEditing = !!editingProfileId;
@@ -31,15 +38,19 @@ export default function OnboardingFlow() {
           setYear(profileToEdit.birthDate?.year || '2003');
           setGender(profileToEdit.gender || '');
           setRelationshipStatus(profileToEdit.relationshipStatus || '');
-          // Always start at step 0 to allow name editing, even for main account
+          setBirthTime(profileToEdit.birthTime || '');
+          setDontKnowTime(profileToEdit.birthTime === null && profileToEdit.onboarded); 
+          setBirthPlace(profileToEdit.birthPlace || '');
+          setBirthDistrict(profileToEdit.birthDistrict || '');
+          
           setStep(0);
         }
       } else {
-        // Reset for new additions or initial setup
         setStep(0);
         setName('');
         setDay('01'); setMonth('01'); setYear('2003');
         setGender(''); setRelationshipStatus('');
+        setBirthTime(''); setDontKnowTime(false); setBirthPlace(''); setBirthDistrict('');
       }
     }
   }, [showOnboarding, editingProfileId, profiles]);
@@ -84,19 +95,20 @@ export default function OnboardingFlow() {
     const m = parseInt(month);
     const zodiacData = getZodiacByDate(d, m);
     
-    // Capitalize every word in name
     const formattedName = formatName(name);
     
-    // Determine which profile we are working on
     const profileToEdit = isEditing ? profiles.find(p => p.id === editingProfileId) : null;
 
     const profileData = {
       id: isEditing ? editingProfileId : (isAddingNew ? Date.now().toString() : 'main'),
-      name: formattedName, // Always use the provided name
+      name: formattedName,
       zodiac: zodiacData?.id || 'aries',
       gender,
       relationshipStatus,
       birthDate: { day, month, year },
+      birthTime: dontKnowTime ? null : birthTime,
+      birthPlace,
+      birthDistrict,
       onboarded: true,
       isMain: isEditing ? profileToEdit?.isMain : !isAddingNew
     };
@@ -106,6 +118,7 @@ export default function OnboardingFlow() {
     } else {
       dispatch({ type: 'SET_USER', payload: profileData });
     }
+    dispatch({ type: 'SHOW_ONBOARDING', payload: false });
   };
 
   if (!showOnboarding) return null;
@@ -123,9 +136,8 @@ export default function OnboardingFlow() {
 
   return (
     <div className="modal-overlay onboarding-overlay">
-      <div className="onboarding-container fade-in">
+      <div className="onboarding-container fade-in" style={{ paddingBottom: '30px', maxHeight: '90vh', overflowY: 'auto' }}>
         
-        {/* Step 0: Name (Only for adding new profiles) */}
         {step === 0 && (
           <div className="onboarding-step">
             <h2 className="step-title">{isAddingNew ? 'Kimi Ekliyoruz?' : 'Adın Ne?'}</h2>
@@ -162,63 +174,33 @@ export default function OnboardingFlow() {
           </div>
         )}
 
-        {/* Step 1: Birth Date */}
         {step === 1 && (
           <div className="onboarding-step">
             <h2 className="step-title">{isAddingNew ? `${formatName(name)} Ne Zaman Doğdu?` : 'Kozmik Yolculuğun Ne Zaman Başladı?'}</h2>
             <p className="step-subtitle">Doğum tarihini belirleyerek yıldız haritasını çıkaralım.</p>
             
             <div className="birth-date-inputs" style={{ display: 'flex', gap: '15px', justifyContent: 'center', margin: '40px 0' }}>
-              {/* Gün */}
               <div className="onboarding-input-wrapper">
-                <button className="stepper-btn" onClick={() => adjustValue('day', 1, 1, 31)}>
-                  <MysticIcon name="add" size={18} />
-                </button>
-                <div className="onboarding-input-box" style={{ width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>
-                  {day}
-                </div>
-                <button className="stepper-btn" onClick={() => adjustValue('day', -1, 1, 31)}>
-                  <MysticIcon name="remove" size={18} />
-                </button>
+                <button className="stepper-btn" onClick={() => adjustValue('day', 1, 1, 31)}><MysticIcon name="add" size={18} /></button>
+                <div className="onboarding-input-box" style={{ width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>{day}</div>
+                <button className="stepper-btn" onClick={() => adjustValue('day', -1, 1, 31)}><MysticIcon name="remove" size={18} /></button>
                 <span style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '8px' }}>Gün</span>
               </div>
-
-              {/* Ay */}
               <div className="onboarding-input-wrapper">
-                <button className="stepper-btn" onClick={() => adjustValue('month', 1, 1, 12)}>
-                  <MysticIcon name="add" size={18} />
-                </button>
-                <div className="onboarding-input-box" style={{ width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>
-                  {month}
-                </div>
-                <button className="stepper-btn" onClick={() => adjustValue('month', -1, 1, 12)}>
-                  <MysticIcon name="remove" size={18} />
-                </button>
+                <button className="stepper-btn" onClick={() => adjustValue('month', 1, 1, 12)}><MysticIcon name="add" size={18} /></button>
+                <div className="onboarding-input-box" style={{ width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>{month}</div>
+                <button className="stepper-btn" onClick={() => adjustValue('month', -1, 1, 12)}><MysticIcon name="remove" size={18} /></button>
                 <span style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '8px' }}>Ay</span>
               </div>
-
-              {/* Yıl */}
               <div className="onboarding-input-wrapper">
-                <button className="stepper-btn" onClick={() => adjustValue('year', 1, 1920, new Date().getFullYear())}>
-                  <MysticIcon name="add" size={18} />
-                </button>
-                <div className="onboarding-input-box" style={{ width: '90px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>
-                  {year}
-                </div>
-                <button className="stepper-btn" onClick={() => adjustValue('year', -1, 1920, new Date().getFullYear())}>
-                  <MysticIcon name="remove" size={18} />
-                </button>
+                <button className="stepper-btn" onClick={() => adjustValue('year', 1, 1920, new Date().getFullYear())}><MysticIcon name="add" size={18} /></button>
+                <div className="onboarding-input-box" style={{ width: '90px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>{year}</div>
+                <button className="stepper-btn" onClick={() => adjustValue('year', -1, 1920, new Date().getFullYear())}><MysticIcon name="remove" size={18} /></button>
                 <span style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '8px' }}>Yıl</span>
               </div>
             </div>
 
-            <button 
-              className="onboarding-next" 
-              disabled={!isDateValid()} 
-              onClick={() => setStep(2)}
-            >
-              Devam Et
-            </button>
+            <button className="onboarding-next" disabled={!isDateValid()} onClick={() => setStep(2)}>Devam Et</button>
             <div style={{ marginTop: '20px' }}>
               <button 
                 className="modal-link back-button" 
@@ -232,7 +214,6 @@ export default function OnboardingFlow() {
           </div>
         )}
 
-        {/* Step 2: Gender */}
         {step === 2 && (
           <div className="onboarding-step">
             <h2 className="step-title">Cinsiyet Kimliği</h2>
@@ -246,24 +227,13 @@ export default function OnboardingFlow() {
                   onClick={() => setGender(opt.id)}
                   style={{ display: 'flex', alignItems: 'center', gap: '15px', padding: '16px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.1)', background: gender === opt.id ? 'var(--accent)' : 'rgba(255,255,255,0.05)', color: gender === opt.id ? 'var(--bg)' : '#fff', cursor: 'pointer' }}
                 >
-                  <MysticIcon 
-                    name={opt.id === 'woman' ? 'female' : opt.id === 'man' ? 'male' : 'nonbinary'} 
-                    color={gender === opt.id ? 'var(--bg)' : '#fff'} 
-                    size={24} 
-                  />
+                  <MysticIcon name={opt.id === 'woman' ? 'female' : opt.id === 'man' ? 'male' : 'nonbinary'} color={gender === opt.id ? 'var(--bg)' : '#fff'} size={24} />
                   <span style={{ fontWeight: '600', fontSize: '15px', letterSpacing: '0.02em' }}>{opt.label}</span>
                 </button>
               ))}
             </div>
 
-            <button 
-              className="onboarding-next" 
-              disabled={!gender} 
-              onClick={() => setStep(3)}
-              style={{ marginTop: '30px' }}
-            >
-              Devam Et
-            </button>
+            <button className="onboarding-next" disabled={!gender} onClick={() => setStep(3)} style={{ marginTop: '30px' }}>Devam Et</button>
             <button className="modal-link back-button" onClick={() => setStep(1)} style={{ marginTop: '15px' }}>
               <MysticIcon name="chevron_left" size={18} style={{ marginRight: '4px' }} />
               Geri Dön
@@ -271,7 +241,6 @@ export default function OnboardingFlow() {
           </div>
         )}
 
-        {/* Step 3: Relationship Status */}
         {step === 3 && (
           <div className="onboarding-step">
             <h2 className="step-title">İlişki Durumu</h2>
@@ -290,27 +259,96 @@ export default function OnboardingFlow() {
               ))}
             </div>
 
-            <button 
-              className="modal-link complex-toggle" 
-              onClick={() => setShowComplexOptions(!showComplexOptions)}
-              style={{ marginTop: '20px', fontSize: '13px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', padding: '8px 16px', color: 'var(--accent)' }}
-            >
+            <button className="modal-link complex-toggle" onClick={() => setShowComplexOptions(!showComplexOptions)} style={{ marginTop: '20px', fontSize: '13px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', padding: '8px 16px', color: 'var(--accent)' }}>
               {showComplexOptions ? 'Daha sade seçenekler...' : 'İşler biraz daha karmaşık...'}
             </button>
 
+            <button className="onboarding-next" disabled={!relationshipStatus} onClick={() => setStep(4)} style={{ marginTop: '30px' }}>
+              Devam Et
+            </button>
+            <button className="modal-link back-button" onClick={() => setStep(2)} style={{ marginTop: '15px', fontSize: '12px', opacity: 0.6 }}>
+              <MysticIcon name="chevron_left" size={16} style={{ verticalAlign: 'middle', marginRight: '4px' }} />
+              Geri Dön
+            </button>
+          </div>
+        )}
+
+        {step === 4 && (
+          <div className="onboarding-step">
+            <h2 className="step-title">Astroloji Detayları</h2>
+            <p className="step-subtitle">Eğer net bir yıldız haritası okuması istersen, bu bilgileri ekleyebilirsin. İstersen sonra da tamamlayabilirsin.</p>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '25px', textAlign: 'left' }}>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <label style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Doğum Saati (İsteğe Bağlı)</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <input 
+                    type="time" 
+                    className="astro-input" 
+                    value={birthTime}
+                    onChange={(e) => {
+                      setBirthTime(e.target.value);
+                      setDontKnowTime(false);
+                    }}
+                    disabled={dontKnowTime}
+                    style={{ flex: 1, padding: '15px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', color: dontKnowTime ? 'gray' : '#fff', border: '1px solid rgba(255,255,255,0.1)', fontFamily: 'var(--font-body)' }}
+                  />
+                  <button 
+                    onClick={() => setDontKnowTime(!dontKnowTime)}
+                    style={{ padding: '15px', borderRadius: '12px', background: dontKnowTime ? 'var(--accent)' : 'transparent', color: dontKnowTime ? '#000' : 'var(--text-secondary)', border: '1px solid var(--accent)', cursor: 'pointer', whiteSpace: 'nowrap', fontSize: '13px' }}
+                  >
+                    Bilmiyorum
+                  </button>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <label style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Doğduğun Şehir</label>
+                <select 
+                  className="astro-input" 
+                  value={birthPlace}
+                  onChange={(e) => { setBirthPlace(e.target.value); setBirthDistrict(''); }}
+                  style={{ WebkitAppearance: 'none', background: '#0a0a0f', color: 'var(--text-primary)', cursor: 'pointer', fontFamily: 'var(--font-body)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}
+                >
+                  <option value="" disabled>Seçiniz...</option>
+                  {TURKEY_CITIES.map(city => <option key={city} value={city}>{city}</option>)}
+                </select>
+              </div>
+
+              {birthPlace && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <label style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>İlçe</label>
+                  <select 
+                    className="astro-input" 
+                    value={birthDistrict}
+                    onChange={(e) => setBirthDistrict(e.target.value)}
+                    style={{ WebkitAppearance: 'none', background: '#0a0a0f', color: 'var(--text-primary)', cursor: 'pointer', fontFamily: 'var(--font-body)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', animation: 'fade-in 0.3s ease' }}
+                  >
+                    <option value="" disabled>İlçe Seç...</option>
+                    {(TURKEY_DISTRICTS[birthPlace] || ["Merkez", "Diğer İlçeler"]).map(district => (
+                      <option key={district} value={district}>{district}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
+
             <button 
               className="onboarding-next" 
-              disabled={!relationshipStatus} 
               onClick={handleComplete}
               style={{ marginTop: '30px' }}
             >
-              {isAddingNew ? `${formatName(name)} Profilini Oluştur` : 'Cassiopeia\'ya Katıl'}
+              Saveliği Tamamla & {isAddingNew ? `Oluştur` : 'Kaydet'}
             </button>
             <button 
               className="modal-link back-button" 
-              onClick={() => setStep(2)} 
-              style={{ marginTop: '15px', fontSize: '12px', opacity: 0.6 }}
+              onClick={handleComplete}
+              style={{ marginTop: '15px', fontSize: '14px', color: 'var(--accent)', textDecoration: 'underline' }}
             >
+              Şimdilik Atla (Sonra Doldururum)
+            </button>
+            <button className="modal-link back-button" onClick={() => setStep(3)} style={{ marginTop: '15px', fontSize: '12px', opacity: 0.6 }}>
               <MysticIcon name="chevron_left" size={16} style={{ verticalAlign: 'middle', marginRight: '4px' }} />
               Geri Dön
             </button>

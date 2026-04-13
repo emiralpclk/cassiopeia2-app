@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAppState, useAppDispatch } from '../context/AppContext';
 import { ZODIAC_SIGNS, GENDER_OPTIONS, RELATIONSHIP_STATUSES, ELEMENT_DATA, getZodiacByDate } from '../utils/constants';
 import MysticIcon from '../components/MysticIcon';
@@ -6,6 +7,7 @@ import MysticIcon from '../components/MysticIcon';
 export default function ProfilePage() {
   const { user, apiKey, history, isTestMode, profiles, activeProfileId } = useAppState();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [showApiInput, setShowApiInput] = useState(false);
   const [newKey, setNewKey] = useState(apiKey || '');
   const [confirmClear, setConfirmClear] = useState(false);
@@ -131,6 +133,14 @@ export default function ProfilePage() {
                 <div className="profile-actions" style={{ position: 'relative', zIndex: 2, display: 'flex', gap: '8px', flexShrink: 0 }}>
                   <button 
                     className="profile-action-btn" 
+                    title="Geçmiş"
+                    onClick={(e) => { e.stopPropagation(); dispatch({ type: 'SWITCH_PROFILE', payload: p.id }); navigate('/gecmis'); }}
+                    style={{ background: 'rgba(160,130,255,0.1)', padding: '10px', borderRadius: '12px', border: '1px solid rgba(160,130,255,0.15)' }}
+                  >
+                    <span className="material-symbols-outlined" style={{ fontSize: '18px', color: 'var(--accent)', display: 'block' }}>history_edu</span>
+                  </button>
+                  <button 
+                    className="profile-action-btn" 
                     onClick={(e) => { e.stopPropagation(); handleEdit(p); }}
                     style={{ background: 'rgba(255,255,255,0.05)', padding: '10px', borderRadius: '12px', border: 'none' }}
                   >
@@ -172,6 +182,107 @@ export default function ProfilePage() {
               <span style={{ fontWeight: '600', fontSize: '14px' }}>Yeni Kimlik Ekle</span>
             </button>
         </div>
+      </div>
+
+      {/* Wallet & Premium Module */}
+      <div className="profile-section" style={{ marginTop: '32px' }}>
+        <h3 className="section-title" style={{ margin: 0, opacity: 0.6, fontSize: '14px', letterSpacing: '0.1em', marginBottom: '16px' }}>CÜZDAN & ABONELİK</h3>
+        
+        <div className="premium-wallet-card" style={{
+          background: 'linear-gradient(135deg, rgba(235, 196, 126, 0.15) 0%, rgba(20, 22, 35, 0.8) 100%)',
+          border: '1px solid rgba(235, 196, 126, 0.3)',
+          borderRadius: '20px',
+          padding: '20px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          {/* Subtle glow */}
+          <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '100px', height: '100px', background: 'var(--gold)', filter: 'blur(50px)', opacity: 0.2 }} />
+
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              <span className="material-symbols-outlined" style={{ color: 'var(--gold)', fontSize: '20px' }}>stars</span>
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Mevcut Bakiye</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+              <span style={{ fontSize: '28px', fontWeight: 'bold', color: '#fff' }}>150</span>
+              <span style={{ fontSize: '14px', color: 'var(--gold)' }}>Stardust</span>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <button style={{
+              background: 'var(--gold)',
+              color: '#1a1b25',
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: '12px',
+              fontWeight: 'bold',
+              fontSize: '14px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px'
+            }}>
+              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>add</span>
+              Yükle
+            </button>
+          </div>
+        </div>
+
+        <button style={{
+          width: '100%',
+          marginTop: '12px',
+          background: 'rgba(255, 255, 255, 0.03)',
+          border: '1px solid rgba(255, 255, 255, 0.05)',
+          padding: '16px',
+          borderRadius: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          cursor: 'pointer'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span className="material-symbols-outlined" style={{ color: 'var(--accent)' }}>workspace_premium</span>
+            <div style={{ textAlign: 'left' }}>
+              <div style={{ fontSize: '15px', color: '#fff', fontWeight: '600' }}>Cassiopeia Premium</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Sınırsız VIP okumalar</div>
+            </div>
+          </div>
+          <span className="material-symbols-outlined" style={{ color: 'var(--text-muted)' }}>chevron_right</span>
+        </button>
+      </div>
+
+      {/* Shortcuts */}
+      <div className="profile-section" style={{ marginTop: '32px' }}>
+        <h3 className="section-title" style={{ margin: 0, opacity: 0.6, fontSize: '14px', letterSpacing: '0.1em', marginBottom: '16px' }}>KİTAPLIĞIM</h3>
+        
+        <button 
+          onClick={() => navigate('/gecmis')}
+          style={{
+          width: '100%',
+          background: 'rgba(255, 255, 255, 0.03)',
+          border: '1px solid rgba(255, 255, 255, 0.05)',
+          padding: '16px',
+          borderRadius: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          cursor: 'pointer'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span className="material-symbols-outlined" style={{ color: 'var(--text-primary)' }}>history_edu</span>
+            <div style={{ textAlign: 'left' }}>
+              <div style={{ fontSize: '15px', color: '#fff', fontWeight: '600' }}>Kozmik Arşiv (Geçmiş)</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Eski fallarını incele</div>
+            </div>
+          </div>
+          <span className="material-symbols-outlined" style={{ color: 'var(--text-muted)' }}>chevron_right</span>
+        </button>
       </div>
 
       {/* Global Settings */}
