@@ -48,7 +48,8 @@ export default function CosmicInsights({ profile }) {
     { id: 'aspects', label: 'Açılar',     icon: '△' },
   ];
 
-  const toggleExpand = (key) => {
+  const toggleExpand = (key, e) => {
+    e?.preventDefault();
     setExpandedItem(prev => prev === key ? null : key);
   };
 
@@ -192,7 +193,7 @@ export default function CosmicInsights({ profile }) {
 
             return (
               <div key={key}
-                onClick={() => toggleExpand(key)}
+                onPointerDown={(e) => toggleExpand(key, e)}
                 style={{
                   background: isExpanded ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.02)',
                   border: `1px solid ${isExpanded ? color + '33' : 'rgba(255,255,255,0.05)'}`,
@@ -283,7 +284,7 @@ export default function CosmicInsights({ profile }) {
 
             return (
               <div key={hNum}
-                onClick={() => toggleExpand(`house-${hNum}`)}
+                onPointerDown={(e) => toggleExpand(`house-${hNum}`, e)}
                 style={{
                   background: isExpanded ? 'rgba(255,215,0,0.04)' : 'rgba(255,255,255,0.02)',
                   border: `1px solid ${isExpanded ? 'rgba(255,215,0,0.2)' : 'rgba(255,255,255,0.05)'}`,
@@ -370,7 +371,7 @@ export default function CosmicInsights({ profile }) {
             
             return (
               <div key={i}
-                onClick={() => toggleExpand(`asp-${i}`)}
+                onPointerDown={(e) => toggleExpand(`asp-${i}`, e)}
                 style={{
                   background: isExpanded ? `${asp.color}08` : 'rgba(255,255,255,0.02)',
                   border: `1px solid ${isExpanded ? asp.color + '33' : 'rgba(255,255,255,0.05)'}`,
