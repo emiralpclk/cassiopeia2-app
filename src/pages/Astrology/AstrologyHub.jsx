@@ -26,8 +26,9 @@ function getPlanetaryHours() {
 
   const elapsed = now - sunrise;
   if (elapsed < 0 || elapsed > dayLength) {
-    return { planet: '☽ Ay', label: 'Gece Vakti', nextChange: null };
+    return { planet: 'Ay', symbol: '☽', label: 'Gece Vakti', nextChange: null };
   }
+
 
   const hourIndex = Math.floor(elapsed / hourLen);
   const startIdx = dayStart[dayOfWeek];
