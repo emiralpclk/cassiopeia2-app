@@ -289,6 +289,7 @@ export function generateBigThreeNarrative(chart, dna) {
       sign: chart.ascendant.name,
       icon: chart.ascendant.icon,
       degree: chart.ascendant.degree,
+      interpretation: ASTRO_DICTIONARY.ascendant?.[chart.ascendant.name] || '',
       element: dna.ascElement,
     } : null,
     synthesis: filledSynthesis,
@@ -511,3 +512,74 @@ export function generateRetrogradeSummary(dna) {
     count: dna.retroCount,
   };
 }
+
+
+// ═══════════════════════════════════════════════════════════════
+//  KOZMİK İMZA ANALİZCİSİ — Haritadaki en vurucu yerleşimler
+//  Kullanıcıyı "Kahine Danış" bölümüne yönlendirecek kancalar.
+// ═══════════════════════════════════════════════════════════════
+
+const PLANET_HOUSE_SIGNATURES = {
+  // ─── Özel ev yerleşimleri (en dikkat çekici olanlar) ────────
+  // Kişisel gezegenler × güçlü evler
+  'sun-1':     { title: 'Güneş 1. Evde', icon: '☉', color: '#FFD700', hook: 'Kimliğin ve fiziksel varlığın çok güçlü bir şekilde birleşmiş. İlk izlenimin ve gerçek benliğin neredeyse aynı — insanlar seni gördüğü gibi alıyor. Bu yerleşim sana doğal bir karizma ve \"ben buradayım\" enerjisi veriyor.' },
+  'sun-10':    { title: 'Güneş 10. Evde', icon: '☉', color: '#FFD700', hook: 'Kariyer ve toplumsal statü hayatının merkezinde. Kamusal alanda parlama ve otorite olma potansiyelin devasa. İnsanlar seni profesyonel kimliğinle tanıyor — bu hem bir armağan hem de bir yük.' },
+  'sun-12':    { title: 'Güneş 12. Evde', icon: '☉', color: '#FFD700', hook: 'Kimliğin gizli ve manevi bir alanda saklı. Dış dünyada kendini tam ifade edemediğini hissedebilirsin ama iç dünyan inanılmaz zengin. Ruhsal derinliğin ve şifa kapasiten çok güçlü.' },
+  'moon-4':    { title: 'Ay 4. Evde', icon: '☽', color: '#E8E8FF', hook: 'Ay kendi doğal evinde — duygusal köklerin, aile bağların ve yuva ihtiyacın hayatının en önemli teması. Ev sana sığınak, aile sana anlam veriyor.' },
+  'moon-8':    { title: 'Ay 8. Evde', icon: '☽', color: '#E8E8FF', hook: 'Duygusal dünyanda yoğun dönüşümler yaşıyorsun. Krizleri içgüdüsel olarak hisseder, insanların gizli taraflarını okursun. Bu yerleşim sana psişik bir derinlik veriyor.' },
+  'moon-12':   { title: 'Ay 12. Evde', icon: '☽', color: '#E8E8FF', hook: 'Duyguların bilinçaltında çok derin bir yerde saklı. Rüyaların, sezgilerin ve empatik kapasiten olağanüstü güçlü ama bazen kendi hislerini tanımlamakta zorlanabilirsin.' },
+  'venus-5':   { title: 'Venüs 5. Evde', icon: '♀', color: '#FF85C2', hook: 'Aşk ve yaratıcılık hayatının en büyük zevkleri. Romantizmin doğal, yaratıcılığın çekici, eğlence anlayışın sofistike. İlişkilerinde çok şanslı bir yerleşim.' },
+  'venus-7':   { title: 'Venüs 7. Evde', icon: '♀', color: '#FF85C2', hook: 'İlişki ve ortaklıklar hayatının altın anahtarı. Doğal bir ilişki kurma yeteneğin var — insanlar seninle olmaktan huzur duyuyor. Evlilik sana çok yakışacak bir kurum.' },
+  'venus-8':   { title: 'Venüs 8. Evde', icon: '♀', color: '#FF85C2', hook: 'Aşkı ve ilişkileri yüzeysel yaşayamıyorsun. Senin için sevmek demek karşındakinin ruhunu soymak, tabular ve sırları birlikte yaşamak. Cinsel ve duygusal yoğunluğun çok güçlü.' },
+  'venus-12':  { title: 'Venüs 12. Evde', icon: '♀', color: '#FF85C2', hook: 'Gizli aşklar, karşılıksız sevgiler veya ruhsal bağlar hayatında önemli bir tema. Sevme biçimin çok derin ama görünmez — sanki başka bir boyutta seviyorsun.' },
+  'mars-1':    { title: 'Mars 1. Evde', icon: '♂', color: '#FF5555', hook: 'Enerji ve eylem gücün fiziksel varlığına yansımış. Atletik, kararlı ve doğrudan biri olarak algılanırsın. Savaşçı ruhun dışarıdan hemen belli.' },
+  'mars-10':   { title: 'Mars 10. Evde', icon: '♂', color: '#FF5555', hook: 'Kariyer hayatın senin savaş alanın. Başarıya ulaşmak için inanılmaz bir hırsın ve gözü pekliğin var. İş dünyasındaki boyun eğmez tutumun hemen fark edilir.' },
+  'mars-12':   { title: 'Mars 12. Evde', icon: '♂', color: '#FF5555', hook: 'Öfken ve irade gücün bilinçaltında saklı. Dışarıdan sakin görünürsün ama içeride çok güçlü bir enerji birikir. Bu gücü yapıcı kanalize etmeyi öğrendiğinde durdurulamazsın.' },
+  'mercury-3': { title: 'Merkür 3. Evde', icon: '☿', color: '#A0B0FF', hook: 'İletişim yeteneğin doğal evinde — yazma, konuşma ve öğrenme konusunda doğuştan yeteneklisin. Çok dilli, çok boyutlu bir zihin.' },
+  'mercury-9': { title: 'Merkür 9. Evde', icon: '☿', color: '#A0B0FF', hook: 'Zihnin sürekli ufuk genişletiyor. Felsefe, yabancı kültürler ve yüksek öğrenim senin doğal habitatın. Öğretmen veya yazar olma potansiyelin çok güçlü.' },
+  'jupiter-2': { title: 'Jüpiter 2. Evde', icon: '♃', color: '#F6A500', hook: 'Maddi bolluk ve değerler konusunda doğal bir şansın var. Para kazanma kapasiten geniş ama dikkatli olmazsan harcama dürtün de o kadar büyük.' },
+  'jupiter-9': { title: 'Jüpiter 9. Evde', icon: '♃', color: '#F6A500', hook: 'Jüpiter kendi doğal evinde — felsefi derinliğin, öğretme yeteneğin ve şansın çok güçlü. Seyahat ve yüksek öğrenim sana kapılar açıyor.' },
+  'saturn-10': { title: 'Satürn 10. Evde', icon: '♄', color: '#8888FF', hook: 'Kariyer yolun uzun ve çetin ama zirveye ulaştığında kimse seni oradan indiremez. Otorite figürleriyle sınavların var ama sonunda otorite sen oluyorsun.' },
+  'pluto-1':   { title: 'Plüton 1. Evde', icon: '♇', color: '#CC6677', hook: 'Yoğun, manyetik ve dönüştürücü bir varlığın var. İnsanlar üzerinde güçlü bir etki bırakırsın — farkında olmasan bile. Hayatın boyunca birçok \"yeniden doğuş\" yaşayacaksın.' },
+  'pluto-8':   { title: 'Plüton 8. Evde', icon: '♇', color: '#CC6677', hook: 'Plüton kendi doğal evinde — dönüşüm, güç ve gizem temaları hayatının merkezinde. Krizlerden küllerinden doğan bir anka kuşu gibi çıkma kapasiten devasa.' },
+};
+
+// Puanlama: Hangi yerleşimler daha "vurucu"?
+const SIGNATURE_PRIORITY = {
+  'venus-8': 95, 'pluto-1': 93, 'pluto-8': 92, 'moon-8': 90,
+  'mars-12': 88, 'sun-12': 87, 'venus-12': 86, 'moon-12': 85,
+  'sun-10': 82, 'mars-10': 80, 'saturn-10': 78, 'sun-1': 75,
+  'mars-1': 73, 'venus-5': 70, 'venus-7': 68, 'moon-4': 65,
+  'jupiter-9': 62, 'jupiter-2': 60, 'mercury-3': 58, 'mercury-9': 55,
+};
+
+const PERSONAL_PLANET_KEYS = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'pluto'];
+
+export function analyzeKozmikImza(chart) {
+  if (!chart?.sun || !chart.hasBirthTime) return null;
+
+  const found = [];
+
+  PERSONAL_PLANET_KEYS.forEach(key => {
+    const planet = chart[key];
+    if (!planet?.house) return;
+
+    const sigKey = `${key}-${planet.house}`;
+    const sig = PLANET_HOUSE_SIGNATURES[sigKey];
+    if (sig) {
+      found.push({
+        key: sigKey,
+        priority: SIGNATURE_PRIORITY[sigKey] || 50,
+        planetKey: key,
+        house: planet.house,
+        sign: planet.name,
+        ...sig,
+      });
+    }
+  });
+
+  // Önceliğe göre sırala, en vurucu 2 tanesini döndür
+  found.sort((a, b) => b.priority - a.priority);
+  return found.slice(0, 2);
+}
+

@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppState } from '../../context/AppContext';
 import CassiopeiaLogo from '../../components/CassiopeiaLogo';
-import { getMoonPhase, getPlanetStatus } from '../../utils/cosmicUtils';
+import { PLANETS } from '../../utils/planetaryContent';
+import { getMoonPhase, getPlanetStatus, buildFullDaySchedule, fmt } from '../../utils/cosmicUtils';
 import natalChartImg from '../../assets/natal_chart_wheel.png';
 
 const MOON_ICONS = {
@@ -11,35 +12,22 @@ const MOON_ICONS = {
   'Son Dördün': 'brightness_4', 'Balzamik Ay': 'nightlight',
 };
 
-// ─── Gezegen Transit Saatleri (Planetary Hours) için yardımcı ───────────────
-function getPlanetaryHours() {
-  const now = new Date();
-  const sunrise = new Date(now); sunrise.setHours(6, 30, 0, 0);
-  const sunset = new Date(now); sunset.setHours(20, 30, 0, 0);
-  const dayLength = sunset - sunrise;
-  const hourLen = dayLength / 12;
-
-  const dayPlanets = ['Güneş', 'Venüs', 'Merkür', 'Ay', 'Satürn', 'Jüpiter', 'Mars'];
-  const daySymbols = ['☀️', '♀️', '☿️', '☽', '♄', '♃', '♂️']; // These will be rendered as text-only symbols
-  const dayOfWeek = now.getDay(); // 0=Pazar
-  const dayStart = [0, 3, 6, 2, 5, 1, 4]; // Her gün hangi gezegenle başlar
-
-  const elapsed = now - sunrise;
-  if (elapsed < 0 || elapsed > dayLength) {
+// ─── Gerçek Gezegen Transit Saati ───────────────────────────────────────────
+function computeActiveHour(cityName) {
+  const schedule = buildFullDaySchedule(cityName || 'İstanbul');
+  const currentHour = schedule.hours.find(h => h.isActive);
+  
+  if (!currentHour) {
+    // Çok nadir köşe durumlar için fallback
     return { planet: 'Ay', symbol: '☽', label: 'Gece Vakti', nextChange: null };
   }
 
-
-  const hourIndex = Math.floor(elapsed / hourLen);
-  const startIdx = dayStart[dayOfWeek];
-  const currentPlanetIdx = (startIdx + hourIndex) % 7;
-  const nextHourStart = new Date(sunrise.getTime() + (hourIndex + 1) * hourLen);
-
+  const p = PLANETS[currentHour.planetKey];
   return {
-    planet: dayPlanets[currentPlanetIdx],
-    symbol: daySymbols[currentPlanetIdx],
-    label: `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} – geçerli saat`,
-    nextChange: nextHourStart,
+    planet: p.name,
+    symbol: p.symbol,
+    label: `${fmt(currentHour.start)} – geçerli saat`,
+    nextChange: currentHour.end,
   };
 }
 
@@ -153,10 +141,11 @@ export default function AstrologyHub() {
   const hasChart = activeProfile?.birthPlace && activeProfile?.birthDistrict;
 
   useEffect(() => {
-    setPlanetaryHour(getPlanetaryHours());
-    const interval = setInterval(() => setPlanetaryHour(getPlanetaryHours()), 60000);
+    const cityName = activeProfile?.birthPlace || 'İstanbul';
+    setPlanetaryHour(computeActiveHour(cityName));
+    const interval = setInterval(() => setPlanetaryHour(computeActiveHour(cityName)), 60000);
     return () => clearInterval(interval);
-  }, []);
+  }, [activeProfile?.birthPlace]);
 
   useEffect(() => {
     if (typeof getMoonPhase === 'function') {

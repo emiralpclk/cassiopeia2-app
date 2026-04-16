@@ -19,6 +19,7 @@ export default function CosmicInsights({ profile }) {
   const [expandedItem, setExpandedItem] = useState(null);
   const [showAll, setShowAll] = useState(false);
   const [showGuideModal, setShowGuideModal] = useState(false);
+  const [guideTab, setGuideTab] = useState('basit'); // 'basit' | 'detayli'
 
   useEffect(() => {
     if (profile?.birthDate) {
@@ -563,9 +564,10 @@ export default function CosmicInsights({ profile }) {
               border: '1px solid rgba(255,255,255,0.1)', 
               borderRadius: '28px',
               maxWidth: 420, width: '100%',
+              maxHeight: '90vh',
               padding: '32px 24px',
               boxShadow: '0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)',
-              position: 'relative', overflow: 'hidden'
+              position: 'relative', overflowY: 'auto'
             }}
           >
             {/* Dekoratif Aurora */}
@@ -576,36 +578,207 @@ export default function CosmicInsights({ profile }) {
             }} />
 
             <div style={{ position: 'relative', zIndex: 1 }}>
-              <div style={{ textAlign: 'center', marginBottom: 28 }}>
-                <span style={{ fontSize: 44, display: 'block', marginBottom: 16, filter: 'drop-shadow(0 4px 12px rgba(255,215,0,0.2))' }}>🎭</span>
-                <h2 style={{ fontSize: '1.4rem', color: '#fff', marginBottom: 6, fontWeight: 600, letterSpacing: '0.02em' }}>Astroloji 101</h2>
-                <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.4)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Tiyatro Metaforu</p>
+              <div style={{ textAlign: 'center', marginBottom: 24 }}>
+                <h2 style={{ fontSize: '1.4rem', color: '#fff', marginBottom: 4, fontWeight: 600, letterSpacing: '0.02em' }}>Astroloji 101</h2>
+              </div>
+
+              {/* ── SEGMENTED CONTROL (Basit / Detaylı) ── */}
+              <div style={{ 
+                display: 'flex', background: 'rgba(255,255,255,0.05)', borderRadius: '24px', 
+                padding: '4px', marginBottom: '28px', border: '1px solid rgba(255,255,255,0.05)'
+              }}>
+                <button 
+                  onClick={() => setGuideTab('basit')}
+                  style={{ 
+                    flex: 1, padding: '12px', borderRadius: '20px', 
+                    background: guideTab === 'basit' ? 'rgba(255,255,255,0.12)' : 'transparent', 
+                    color: guideTab === 'basit' ? '#fff' : 'rgba(255,255,255,0.4)', 
+                    fontWeight: guideTab === 'basit' ? 600 : 400, fontSize: '0.85rem',
+                    transition: 'all 0.2s', border: 'none', cursor: 'pointer',
+                    boxShadow: guideTab === 'basit' ? '0 4px 12px rgba(0,0,0,0.1)' : 'none'
+                  }}
+                >
+                  Basit
+                </button>
+                <button 
+                  onClick={() => setGuideTab('detayli')}
+                  style={{ 
+                    flex: 1, padding: '12px', borderRadius: '20px', 
+                    background: guideTab === 'detayli' ? 'rgba(255,255,255,0.12)' : 'transparent', 
+                    color: guideTab === 'detayli' ? '#fff' : 'rgba(255,255,255,0.4)', 
+                    fontWeight: guideTab === 'detayli' ? 600 : 400, fontSize: '0.85rem',
+                    transition: 'all 0.2s', border: 'none', cursor: 'pointer',
+                    boxShadow: guideTab === 'detayli' ? '0 4px 12px rgba(0,0,0,0.1)' : 'none'
+                  }}
+                >
+                  Detaylı
+                </button>
               </div>
               
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 32 }}>
-                {[
-                  { icon: '⊙', title: 'Gezegenler (Aktörler)', color: '#FFD700', bg: 'rgba(255,215,0,0.04)', text: 'İçindeki farklı karakterlerdir. (Örn: Mars savaşçındır, Venüs aşığındır.)' },
-                  { icon: '♈︎', title: 'Burçlar (Kostümler/Roller)', color: '#A0B0FF', bg: 'rgba(160,176,255,0.04)', text: 'Bu aktörlerin "nasıl" davrandığıdır. (Örn: Venüs Koç burcundayken aşık sabırsızdır.)' },
-                  { icon: '⌂', title: 'Evler (Sahneler)', color: '#FF85C2', bg: 'rgba(255,133,194,0.04)', text: 'Olayın hayatın neresinde geçtiğidir. (Örn: 7. Ev evlilik sahnesi, 10. Ev kariyerdir.)' },
-                  { icon: '△', title: 'Açılar (Diyaloglar)', color: '#00E5CC', bg: 'rgba(0,229,204,0.04)', text: 'İçindeki aktörler birbirine destek mi (Üçgen) yoksa kavga mı (Kare) ediyor?' }
-                ].map((item, idx) => (
-                  <div key={idx} style={{ 
-                    background: item.bg, 
-                    border: `1px solid ${item.color}22`,
-                    padding: '14px 16px', 
-                    borderRadius: '16px',
-                    display: 'flex', gap: '14px', alignItems: 'flex-start'
+              {guideTab === 'basit' ? (
+                <>
+                  <div style={{ textAlign: 'center', marginBottom: 24 }}>
+                    <span style={{ fontSize: 44, display: 'block', marginBottom: 12, filter: 'drop-shadow(0 4px 12px rgba(255,215,0,0.2))' }}>🎭</span>
+                    <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.4)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Tiyatro Metaforu</p>
+                  </div>
+                  
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 24 }}>
+                    {[
+                      { icon: '⊙', title: 'Gezegenler (Aktörler)', color: '#FFD700', bg: 'rgba(255,215,0,0.04)', text: 'İçindeki farklı karakterlerdir. (Örn: Mars savaşçındır, Venüs aşığındır.)' },
+                      { icon: '♈︎', title: 'Burçlar (Kostümler/Roller)', color: '#A0B0FF', bg: 'rgba(160,176,255,0.04)', text: 'Bu aktörlerin "nasıl" davrandığıdır. (Örn: Venüs Koç burcundayken aşık sabırsızdır.)' },
+                      { icon: '⌂', title: 'Evler (Sahneler)', color: '#FF85C2', bg: 'rgba(255,133,194,0.04)', text: 'Olayın hayatın neresinde geçtiğidir. (Örn: 7. Ev evlilik sahnesi, 10. Ev kariyerdir.)' },
+                      { icon: '△', title: 'Açılar (Diyaloglar)', color: '#00E5CC', bg: 'rgba(0,229,204,0.04)', text: 'İçindeki aktörler birbirine destek mi (Üçgen) yoksa kavga mı (Kare) ediyor?' }
+                    ].map((item, idx) => (
+                      <div key={idx} style={{ 
+                        background: item.bg, 
+                        border: `1px solid ${item.color}22`,
+                        padding: '14px 16px', 
+                        borderRadius: '16px',
+                        display: 'flex', gap: '14px', alignItems: 'flex-start'
+                      }}>
+                        <span style={{ color: item.color, fontSize: '1.2rem', marginTop: '-2px' }}>{item.icon}</span>
+                        <div>
+                          <strong style={{ color: item.color, display: 'block', marginBottom: 4, fontSize: '0.9rem', letterSpacing: '0.02em' }}>{item.title}</strong>
+                          <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.5, margin: 0 }}>
+                            {item.text}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* ── CASSIO ASTRO MAP FARKI ── */}
+                  <div style={{ 
+                    marginBottom: 32, padding: '16px', background: 'rgba(255,255,255,0.03)', 
+                    borderRadius: '16px', border: '1px solid rgba(255,255,255,0.08)' 
                   }}>
-                    <span style={{ color: item.color, fontSize: '1.2rem', marginTop: '-2px' }}>{item.icon}</span>
-                    <div>
-                      <strong style={{ color: item.color, display: 'block', marginBottom: 4, fontSize: '0.9rem', letterSpacing: '0.02em' }}>{item.title}</strong>
-                      <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.5, margin: 0 }}>
-                        {item.text}
-                      </p>
+                    <h3 style={{ fontSize: '0.95rem', color: '#c8a9fa', marginBottom: '10px', fontWeight: '700', letterSpacing: '0.04em', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span>✨</span> Cassio Astro Map Farkı
+                    </h3>
+                    <p style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.7)', lineHeight: '1.6', marginBottom: '12px' }}>
+                      Standart, düz çizilmiş haritaları unutun. Cassiopeia, gerçek uzay matematiği ve profesyonel <strong>Placidus</strong> ev sistemini kullanır. İçerideki haç işaretinin (altın eksenlerin) cetvelle çizilmiş gibi kusursuz bir simetriye sahip olmamasının sebebi budur; gökyüzünün ve dünyanın eğikliğini, bulunduğun enleme göre haritana milimetrik olarak yansıtır.
+                    </p>
+                    <p style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.7)', lineHeight: '1.6', margin: 0 }}>
+                      Ayrıca bu harita donuk bir JPEG okuması değildir. Anlık transitlerle titreşen, dokunabildiğin, derinleşebildiğin canlı ve dinamik bir <strong>Kozmik Organizma</strong>dır.
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: 28 }}>
+                  <div style={{ textAlign: 'center', marginBottom: 8 }}>
+                    <h3 style={{ color: '#c8a9fa', fontSize: '1.05rem', fontWeight: 600, letterSpacing: '0.04em' }}>İleri Düzey Okuma Sözlüğü</h3>
+                    <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginTop: 4, lineHeight: 1.5 }}>Uygulamadaki yoğun bilgi akışını profesyonelce çözmeniz için kozmik başvuru rehberi.</p>
+                  </div>
+
+                  {/* ── 10 GÖKSEL AKTÖR (GEZEGENLER) ── */}
+                  <div style={{ background: 'linear-gradient(145deg, rgba(255,215,0,0.04), transparent)', border: '1px solid rgba(255,215,0,0.15)', padding: '16px', borderRadius: '16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                      <span style={{ fontSize: '1.2rem', color: '#FFD700' }}>⊙</span>
+                      <strong style={{ color: '#fff', fontSize: '0.95rem' }}>10 Göksel Aktör (Gezegenler Sözlüğü)</strong>
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                      {[
+                        { s: '☀️', n: 'Güneş', d: 'Öz Benlik / Ego' },
+                        { s: '🌙', n: 'Ay', d: 'Duygular / İhtiyaçlar' },
+                        { s: '☿', n: 'Merkür', d: 'Zihin / İletişim' },
+                        { s: '♀', n: 'Venüs', d: 'Aşk / Değerler' },
+                        { s: '♂', n: 'Mars', d: 'Kavga / Cesaret' },
+                        { s: '♃', n: 'Jüpiter', d: 'Şans / Büyüme' },
+                        { s: '♄', n: 'Satürn', d: 'Disiplin / Sınavlar' },
+                        { s: '♅', n: 'Uranüs', d: 'İsyan / Devrim' },
+                        { s: '♆', n: 'Neptün', d: 'Hayaller / Yanılsama' },
+                        { s: '♇', n: 'Plüton', d: 'Yıkım / Küllerden Doğuş' }
+                      ].map((p, i) => (
+                        <div key={i} style={{ background: 'rgba(255,255,255,0.04)', padding: '6px 10px', borderRadius: '8px', fontSize: '0.75rem', color: 'rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                          <span style={{ marginRight: '4px' }}>{p.s}</span> <strong style={{ color: '#FFD700' }}>{p.n}:</strong> {p.d}
+                        </div>
+                      ))}
                     </div>
                   </div>
-                ))}
-              </div>
+
+                  {/* ── 12 YAŞAM SAHNESİ (EVLER) ── */}
+                  <div style={{ background: 'linear-gradient(145deg, rgba(255,133,194,0.04), transparent)', border: '1px solid rgba(255,133,194,0.15)', padding: '16px', borderRadius: '16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                      <span style={{ fontSize: '1.2rem', color: '#FF85C2' }}>⌂</span>
+                      <strong style={{ color: '#fff', fontSize: '0.95rem' }}>12 Yaşam Sahnesi (Evler Sözlüğü)</strong>
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                      {[
+                        { e: '1', d: 'Masken / Karakterin' },
+                        { e: '2', d: 'Maddi Güç / Değer Duygun' },
+                        { e: '3', d: 'İletişim / Yakın Çevre' },
+                        { e: '4', d: 'Kökler / Aile / Yuva' },
+                        { e: '5', d: 'Aşk / Yaratıcılık / Flört' },
+                        { e: '6', d: 'Sağlık / Günlük Rutin' },
+                        { e: '7', d: 'Evlilik / Ortaklıklar' },
+                        { e: '8', d: 'Krizler / Dönüşüm / Sırlar' },
+                        { e: '9', d: 'Uygarlık / İnanç / Eğitim' },
+                        { e: '10', d: 'Başarı / Toplumsal Statü' },
+                        { e: '11', d: 'İdealler / Sosyal Çevre' },
+                        { e: '12', d: 'Bilinçaltı / Kayıplar' }
+                      ].map((h, i) => (
+                        <div key={i} style={{ background: 'rgba(255,255,255,0.04)', padding: '6px 10px', borderRadius: '8px', fontSize: '0.75rem', color: 'rgba(255,255,255,0.75)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                          <strong style={{ color: '#FF85C2' }}>{h.e}. Ev:</strong> {h.d}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{ background: 'linear-gradient(145deg, rgba(255,85,85,0.06), transparent)', border: '1px solid rgba(255,85,85,0.15)', padding: '16px', borderRadius: '16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                      <span style={{ fontSize: '1.2rem', color: '#ff5555' }}>◬</span>
+                      <strong style={{ color: '#fff', fontSize: '0.95rem' }}>Açıların Büyüsü (Merkez Çizgiler)</strong>
+                    </div>
+                    <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.6, margin: 0 }}>
+                      Haritandaki o parlak çizgiler sadece birer şekil değil, içindeki karakterlerin birbirleriyle girdiği "gerçek diyaloglardır".<br/>
+                      <strong style={{ color: '#ff6b6b' }}>Kırmızı Çizgiler (Kare / Karşıt):</strong> Çatışma, zorluk ve eylemdir. Ancak korkulacak bir şey değildir; en büyük başarılar ve uyanış, bu "kırmızı" krizleri aşarak gelir.<br/>
+                      <strong style={{ color: '#4da6ff' }}>Mavi Çizgiler (Üçgen / Sekstil):</strong> "Aktığı gibi giden" su enerjisidir. Doğuştan gelen, hiç zorlanmadan icra ettiğin yeteneklerin ve açık şans kapılandır.<br/>
+                      <strong style={{ color: '#FFD700' }}>Kavuşum (Orbit 0°):</strong> İki gücün tek vücut olmasıdır. Haritandaki en yoğun lazer gücüdür.
+                    </p>
+                  </div>
+
+                  <div style={{ background: 'linear-gradient(145deg, rgba(180,140,255,0.06), transparent)', border: '1px solid rgba(180,140,255,0.15)', padding: '16px', borderRadius: '16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                      <span style={{ fontSize: '1.4rem', color: '#b48cff', fontFamily: 'serif' }}>℞</span>
+                      <strong style={{ color: '#fff', fontSize: '0.95rem' }}>Karmik Vites: Retrograde (Geri Hareket)</strong>
+                    </div>
+                    <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.6, margin: 0 }}>
+                      İsminde veya sembolünde <code>℞</code> (Retro) işareti bulunan gezegenler, enerjinin <strong>dışa değil, içe döndüğünü</strong> söyler. Dışarı adım atman değil, o gezegenin anlattığı konularda içine dönüp geçmişteki karmik eksiklerini tamamlaman beklenir. Bu gezegenler senin en derin aydınlanma ustalarındır.
+                    </p>
+                  </div>
+
+                  <div style={{ background: 'linear-gradient(145deg, rgba(0,230,180,0.06), transparent)', border: '1px solid rgba(0,230,180,0.15)', padding: '16px', borderRadius: '16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                      <span style={{ fontSize: '1.2rem', color: '#00e6b4' }}>✧</span>
+                      <strong style={{ color: '#fff', fontSize: '0.95rem' }}>Gezegen Asaletleri (Dignities)</strong>
+                    </div>
+                    <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.6, margin: 0 }}>
+                      Bir gezegen, bulunduğu burca göre "ev sahibi" mi yoksa "yabancı" mı olduğunu belli eder.<br/>
+                      <strong>Yönetici / Yücelim:</strong> Kendi krallığındadır. Hükmeder. O konularda hayat sana her zaman imtiyaz verir.<br/>
+                      <strong>Zararlı / Düşük:</strong> Yabancı dilde konuşulan bir gurbettedir. Önce seni zorlar ve efor sarf ettirir, ancak azmedersen hayatının en tatmin edici bilgeliğini oradan edinirsin.
+                    </p>
+                  </div>
+
+                  <div style={{ background: 'linear-gradient(145deg, rgba(200,200,220,0.06), transparent)', border: '1px solid rgba(200,200,220,0.15)', padding: '16px', borderRadius: '16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                      <span style={{ fontSize: '1.2rem', color: '#c8c8dc' }}>☊</span>
+                      <strong style={{ color: '#fff', fontSize: '0.95rem' }}>Kadersel Pusula: Ay Düğümleri</strong>
+                    </div>
+                    <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.6, margin: 0 }}>
+                      Haritandaki <strong style={{ color: '#fff' }}>Kuzey Ay Düğümü (☊)</strong> bu hayatta gitmen gereken, potansiyelini bulacağın kadersel hedeftir. Öğrenmesi zordur. <strong style={{ color: '#fff' }}>Güney Ay Düğümü (☋)</strong> ise geçmiş yaşamlardan (karman) veya atalarından getirdiğin, çok iyi bildiğin ama artık seni geliştirmeyen "konfor alanındır". Evren her zaman kuzeye doğru yürümeni talep eder.
+                    </p>
+                  </div>
+
+                  <div style={{ background: 'linear-gradient(145deg, rgba(255,160,50,0.06), transparent)', border: '1px solid rgba(255,160,50,0.15)', padding: '16px', borderRadius: '16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                      <span style={{ fontSize: '1.2rem', color: '#ffa032' }}>◷</span>
+                      <strong style={{ color: '#fff', fontSize: '0.95rem' }}>Kozmik Hava Durumu: Transitler</strong>
+                    </div>
+                    <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.6, margin: 0 }}>
+                      Doğduğunda gökyüzünün durdurup çekilmiş 3 boyutlu fotoğrafı senin değişmez <strong style={{ color: '#fff' }}>Natal</strong> haritandır. Ancak gezegenler dönmeye devam eder! İşte o anki gezegenlerin (örneğin tepedeki Ay'ın), senin sabit haritana uğrayıp uyguladığı anlık temaslara <strong style={{ color: '#fff' }}>Transit Etkisi</strong> diyoruz. Cassiopeia, gökyüzünün anlık rotasını senin haritanla birleştirerek her gün sana eşsiz ve canlı bir kozmik analiz sunar.
+                    </p>
+                  </div>
+                </div>
+              )}
 
               <button 
                 onClick={() => setShowGuideModal(false)}

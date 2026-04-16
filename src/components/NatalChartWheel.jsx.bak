@@ -290,21 +290,18 @@ export default function NatalChartWheel({ profile }) {
             return (
               <g key={z.name}>
                 <path d={d}
-                  fill={isSun ? `${elColor}40` : hasPlanet ? `${elColor}25` : 'rgba(255,255,255,0.04)'}
-                  stroke={isSun ? `${elColor}77` : 'rgba(255,255,255,0.1)'}
-                  strokeWidth={isSun ? 1.5 : 0.5}
+                  fill={isSun ? `${elColor}22` : hasPlanet ? `${elColor}10` : 'rgba(226,232,240,0.02)'}
+                  stroke={isSun ? `${elColor}44` : 'rgba(255,255,255,0.06)'}
+                  strokeWidth={isSun ? 1 : 0.5}
                 />
                 {/* Zodiac symbol */}
                 <text
                   x={CX + ((outer + inner) / 2) * Math.cos(amid * DEG2RAD)}
                   y={CY + ((outer + inner) / 2) * Math.sin(amid * DEG2RAD)}
                   textAnchor="middle" dominantBaseline="central"
-                  fontSize={isSun ? 19 : 15} fontFamily="serif"
-                  fill={hasPlanet || isSun ? elColor : 'rgba(255,255,255,0.35)'}
-                  style={{ 
-                    pointerEvents: 'none',
-                    filter: hasPlanet || isSun ? `drop-shadow(0 0 6px ${elColor}AA)` : 'none'
-                  }}
+                  fontSize={isSun ? 18 : 14} fontFamily="serif"
+                  fill={hasPlanet || isSun ? elColor : 'rgba(255,255,255,0.25)'}
+                  style={{ pointerEvents: 'none' }}
                 >{z.sym}</text>
               </g>
             );
@@ -322,9 +319,6 @@ export default function NatalChartWheel({ profile }) {
               />
             );
           })}
-
-          {/* ── Zodiac Background Band (Enhances contrast) ── */}
-          <circle cx={CX} cy={CY} r={(R_OUTER+R_ZODIAC_IN)/2} fill="none" stroke="rgba(15, 15, 40, 0.55)" strokeWidth={R_OUTER-R_ZODIAC_IN} style={{ pointerEvents: 'none' }} />
 
           {/* ── Zodiac inner ring ── */}
           <circle cx={CX} cy={CY} r={R_ZODIAC_IN} fill="none" stroke="rgba(226,232,240,0.12)" strokeWidth="0.8" />
@@ -359,8 +353,8 @@ export default function NatalChartWheel({ profile }) {
                 <line
                   x1={CX + R_CORE * Math.cos(rad)} y1={CY + R_CORE * Math.sin(rad)}
                   x2={CX + R_ZODIAC_IN * Math.cos(rad)} y2={CY + R_ZODIAC_IN * Math.sin(rad)}
-                  stroke={isAxis ? 'rgba(255,215,0,0.6)' : 'rgba(255,223,100,0.2)'}
-                  strokeWidth={isAxis ? 1.8 : 0.8}
+                  stroke={isAxis ? 'rgba(255,215,0,0.3)' : 'rgba(255,255,255,0.07)'}
+                  strokeWidth={isAxis ? 1.2 : 0.5}
                   strokeDasharray={isAxis ? 'none' : '3 4'}
                 />
                 {/* House number */}
@@ -437,9 +431,8 @@ export default function NatalChartWheel({ profile }) {
             <line key={`asp-${i}`}
               x1={asp.x1} y1={asp.y1} x2={asp.x2} y2={asp.y2}
               stroke={asp.color}
-              strokeWidth={asp.strength > 0.7 ? 2.5 : 1.5}
-              strokeOpacity={asp.strength > 0.5 ? 0.9 : 0.6}
-              filter="url(#ncw-glow2)"
+              strokeWidth={asp.strength > 0.7 ? 1.8 : 1.1}
+              strokeOpacity={asp.strength > 0.5 ? 0.7 : 0.4}
               strokeDasharray={asp.lineStyle === 'dashed' ? '4 3' : 'none'}
             />
           ))}
@@ -462,19 +455,19 @@ export default function NatalChartWheel({ profile }) {
           <circle cx={CX} cy={CY} r={(R_HOUSE_IN + R_PLANET) / 2} fill="none" stroke="rgba(226,232,240,0.03)" strokeWidth="0.3" strokeDasharray="2 4" />
 
           {/* ── Core fill ── */}
-          <circle cx={CX} cy={CY} r={R_CORE} fill="url(#ncw-core2)" stroke="rgba(255,215,0,0.4)" strokeWidth="1.5" filter="url(#ncw-glow2)" />
+          <circle cx={CX} cy={CY} r={R_CORE} fill="url(#ncw-core2)" stroke="rgba(226,232,240,0.12)" strokeWidth="0.7" />
 
           {/* ── Pulsing center ring ── */}
-          <circle cx={CX} cy={CY} r={22} fill="rgba(255,215,0,0.05)" stroke="rgba(255,215,0,0.4)" strokeWidth="1.0">
-            <animate attributeName="r"       values="20;25;20" dur="4s" repeatCount="indefinite" />
-            <animate attributeName="opacity" values="0.4;1;0.4" dur="4s" repeatCount="indefinite" />
+          <circle cx={CX} cy={CY} r={22} fill="rgba(226,232,240,0.03)" stroke="rgba(226,232,240,0.2)" strokeWidth="0.5">
+            <animate attributeName="r"       values="20;24;20" dur="5s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.3;0.8;0.3" dur="5s" repeatCount="indefinite" />
           </circle>
 
           {/* ── Center label ── */}
-          <text x={CX} y={CY - 3} textAnchor="middle" fontSize="14" fill="rgba(255,215,0,0.9)" fontFamily="serif"
-            style={{ pointerEvents: 'none', filter: 'drop-shadow(0 0 4px rgba(255,215,0,0.6))' }}>✦</text>
-          <text x={CX} y={CY + 9} textAnchor="middle" fontSize="6" fill="rgba(255,215,0,0.6)"
-            fontFamily="var(--font-body)" letterSpacing="0.25em" fontWeight="600" style={{ pointerEvents: 'none' }}>NATAL</text>
+          <text x={CX} y={CY - 3} textAnchor="middle" fontSize="12" fill="rgba(226,232,240,0.4)" fontFamily="serif"
+            style={{ pointerEvents: 'none' }}>✦</text>
+          <text x={CX} y={CY + 9} textAnchor="middle" fontSize="5.5" fill="rgba(226,232,240,0.2)"
+            fontFamily="var(--font-body)" letterSpacing="0.2em" style={{ pointerEvents: 'none' }}>NATAL</text>
 
           {/* ── Planets ── */}
           {placed.map(p => {

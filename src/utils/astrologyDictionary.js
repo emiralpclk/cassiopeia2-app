@@ -204,5 +204,19 @@ export const ASTRO_DICTIONARY = {
     'Oğlak': 'Sorumluluk almayı ve disiplinli olmayı öğrenmen gerekiyor. Duygusallık yerine yapı dersin.',
     'Kova': 'Topluluk için çalışmayı ve özgün olmayı öğrenmen gerekiyor. Drama yerine insanlık dersin.',
     'Balık': 'Teslim olmayı ve evrenle bütünleşmeyi öğrenmen gerekiyor. Kontrol yerine akış dersin.'
+  },
+  ascendant: {
+    'Koç': 'İlk izleniminde çok enerjik, doğrudan ve hatta biraz sabırsızsın. İnsanlar senin liderlik özelliklerini ve cesaretini hemen fark ederler.',
+    'Boğa': 'Topraklanmış, sakin ve güven veren bir dış görünüşün var. Girdiğin ortamlarda kolay sarsılmayan ve estetiğiyle dikkat çeken birisin.',
+    'İkizler': 'Herkesle hemen sohbete girebilen, meraklı ve çok hareketli bir imaj çizersin. Gözlerin hep bir şeyleri arar, bedenin asla tam durmaz.',
+    'Yengeç': 'Dışarıdan yumuşak, hassas ve biraz içine kapalı görünebilirsin. Yeni insanlara alışman zaman alır ama bir o kadar da evcimen bir aura yayarsın.',
+    'Aslan': 'Girdiğin odada herkesin dikkatini çekecek bir ışığın, sıcak bir enerjin ve asil bir duruşun var. Saçların veya postürün kendini belli eder.',
+    'Başak': 'Derli toplu, dikkatli ve biraz mesafeli bir ilk izlenim bırakırsın. Olayları ve insanları önce analiz etmeyi, sonra dahil olmayı seçersin.',
+    'Terazi': 'Son derece zarif, çekici ve diplomatik bir auraya sahipsin. İnsanlar seninle kolayca bağ kurar, dış görünüşünde her zaman bir uyum vardır.',
+    'Akrep': 'İnsanlar üzerinde gizemli, yoğun ve biraz da nüfuz edici bir etki bırakırsın. Bakışların adeta karşındakinin ruhunu okur gibidir.',
+    'Yay': 'Güler yüzlü, patavatsızca samimi ve rahat bir imajın var. Yeni maceralara her an hazır ve ortama neşe katan biri olarak tanınırsın.',
+    'Oğlak': 'Genç yaşta bile olgun, ciddi ve güvenilir görünürsün. Girdiğin ortamlarda hemen bir otorite ve saygınlık hali yaratırsın.',
+    'Kova': 'İnsanlar seni biraz farklı, entelektüel ama mesafeli bulur. Çok dost canlısı görünürsün ancak kendi kişisel alanına müdahale edilmesini sevmezsin.',
+    'Balık': 'Sihirli, rüya gibi ve biraz da dalgın bir havan var. İnsanlar senin empatik yüzünü hemen fark edip dertlerini sana anlatma eğilimi gösterir.'
   }
 };

@@ -8,6 +8,7 @@ import {
   generateContradictions,
   generateDestinyCareer,
   generateRetrogradeSummary,
+  analyzeKozmikImza,
 } from '../utils/chartNarrative';
 
 // ─── ELEMENT RENKLERİ ─────────────────────────────────────────
@@ -258,6 +259,7 @@ export default function CosmicCards({ profile }) {
   const contradictions = useMemo(() => chartData && dna ? generateContradictions(chartData, dna) : null, [chartData, dna]);
   const destiny = useMemo(() => chartData ? generateDestinyCareer(chartData) : null, [chartData]);
   const retro = useMemo(() => dna ? generateRetrogradeSummary(dna) : null, [dna]);
+  const kozmikImza = useMemo(() => chartData ? analyzeKozmikImza(chartData) : null, [chartData]);
 
   if (!chartData || !dna) return null;
 
@@ -513,6 +515,78 @@ export default function CosmicCards({ profile }) {
               </div>
             </div>
           ))}
+        </ExpandableCard>
+      )}
+
+
+      {/* ━━━ KART 6: Kozmik İmzan (Upsell Hook) ━━━ */}
+      {kozmikImza && kozmikImza.length > 0 && (
+        <ExpandableCard
+          icon="✦"
+          title="Doğuştan Gelen Silahın"
+          subtitle={`${kozmikImza.length} dikkat çekici yerleşim`}
+          badge="Özel"
+          badgeColor="#c8a9fa"
+          aurora="200, 169, 250"
+          defaultOpen={false}
+        >
+          {kozmikImza.map((sig, i) => (
+            <div key={sig.key} style={{
+              padding: '14px',
+              background: `${sig.color}06`,
+              borderRadius: '12px',
+              marginBottom: i < kozmikImza.length - 1 ? '10px' : 0,
+              border: `1px solid ${sig.color}15`,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <span style={{ fontFamily: 'serif', fontSize: '18px', color: sig.color }}>{sig.icon}</span>
+                <div>
+                  <div style={{ fontSize: '0.8rem', fontWeight: 700, color: sig.color, letterSpacing: '0.03em' }}>
+                    {sig.title}
+                  </div>
+                  <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)' }}>
+                    {sig.sign} · {sig.house}. Ev
+                  </div>
+                </div>
+              </div>
+              <div style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.6)', lineHeight: '1.65' }}>
+                {sig.hook}
+              </div>
+            </div>
+          ))}
+
+          {/* Kahine Danış CTA (Boş — sonra bağlanacak) */}
+          <div
+            onClick={() => alert('Kozmik Kahin çok yakında! 🔮')}
+            style={{
+              marginTop: '16px',
+              padding: '14px 18px',
+              borderRadius: '14px',
+              background: 'linear-gradient(135deg, rgba(200,169,250,0.12), rgba(255,215,0,0.06))',
+              border: '1px solid rgba(200,169,250,0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            <div>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#c8a9fa', letterSpacing: '0.04em' }}>
+                Daha Fazlasını Keşfet
+              </div>
+              <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.4)', marginTop: '2px' }}>
+                Bu yerleşimlerin hayatına etkisini Kahin'e sor
+              </div>
+            </div>
+            <div style={{
+              width: '32px', height: '32px', borderRadius: '50%',
+              background: 'rgba(200,169,250,0.15)',
+              border: '1px solid rgba(200,169,250,0.25)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: '14px',
+            }}>🔮</div>
+          </div>
         </ExpandableCard>
       )}
 

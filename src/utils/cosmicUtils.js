@@ -1,5 +1,5 @@
 /**
- * Calculations for Moon Phases and Planetary Retrogrades
+ * Calculations for Moon Phases, Planetary Retrogrades, and Sunrise/Sunset
  * No external API required — all live from astronomy-engine.
  */
 import {
@@ -7,8 +7,121 @@ import {
   GeoVector,
   Ecliptic,
   Body,
-  MakeTime
+  MakeTime,
+  SearchRiseSet,
+  Observer
 } from 'astronomy-engine';
+
+import { getCityCoordinates, DEFAULT_COORDINATES } from './cities';
+
+// ─── Gün Doğumu / Batımı Hesaplayıcı ────────────────────────────────────────
+// Kullanıcının şehrindeki GERÇEK gün doğumu ve batımı.
+// Mevsime ve konuma göre her gün farklıdır.
+
+const DIRECTION_RISE = 1;   // astronomy-engine: +1 = Rise
+const DIRECTION_SET  = -1;  // astronomy-engine: -1 = Set
+
+/**
+ * Belirtilen şehir ve tarih için gerçek gün doğumu ve batımı hesaplar.
+ * @param {string} cityName - Kullanıcının doğduğu/bulunduğu şehir
+ * @param {Date} date - Hesaplanacak tarih (varsayılan: bugün)
+ * @returns {{ sunrise: Date, sunset: Date, dayLength: number, nightLength: number }}
+ */
+export const getSunTimes = (cityName, date = new Date()) => {
+  const coords = getCityCoordinates(cityName);
+  const observer = new Observer(coords.lat, coords.lng, 0);
+  
+  // Günün başlangıcından itibaren ara
+  const dayStart = new Date(date);
+  dayStart.setHours(0, 0, 0, 0);
+  const time = MakeTime(dayStart);
+  
+  let sunrise, sunset;
+  
+  try {
+    const riseResult = SearchRiseSet(Body.Sun, observer, DIRECTION_RISE, time, 1);
+    sunrise = riseResult ? riseResult.date : null;
+  } catch (e) {
+    console.warn('[cosmicUtils] Gün doğumu hesap hatası:', e);
+    sunrise = null;
+  }
+  
+  try {
+    const setResult = SearchRiseSet(Body.Sun, observer, DIRECTION_SET, time, 1);
+    sunset = setResult ? setResult.date : null;
+  } catch (e) {
+    console.warn('[cosmicUtils] Gün batımı hesap hatası:', e);
+    sunset = null;
+  }
+  
+  // Fallback — hesaplanamadıysa makul varsayılan
+  if (!sunrise) { sunrise = new Date(date); sunrise.setHours(6, 30, 0, 0); }
+  if (!sunset)  { sunset  = new Date(date); sunset.setHours(20, 0, 0, 0); }
+  
+  const dayLength = sunset - sunrise;
+  
+  // Bir sonraki gün doğumunu da hesapla (gece uzunluğu için)
+  let nextSunrise;
+  try {
+    const nextDay = new Date(dayStart);
+    nextDay.setDate(nextDay.getDate() + 1);
+    const nextTime = MakeTime(nextDay);
+    const nextRiseResult = SearchRiseSet(Body.Sun, observer, DIRECTION_RISE, nextTime, 1);
+    nextSunrise = nextRiseResult ? nextRiseResult.date : null;
+  } catch (e) {
+    nextSunrise = null;
+  }
+  if (!nextSunrise) { nextSunrise = new Date(date); nextSunrise.setDate(nextSunrise.getDate() + 1); nextSunrise.setHours(6, 30, 0, 0); }
+  
+  const nightLength = nextSunrise - sunset;
+  
+  return { sunrise, sunset, nextSunrise, dayLength, nightLength };
+};
+
+// ─── Gezegen Saat Hesaplayıcı (24 Saat — Gündüz + Gece) ─────────────────────
+export const PLANET_ORDER = ['Güneş', 'Venüs', 'Merkür', 'Ay', 'Satürn', 'Jüpiter', 'Mars'];
+export const DAY_START_PLANET = [0, 3, 6, 2, 5, 1, 4]; // 0=Paz, 1=Pzt...
+
+export function buildFullDaySchedule(cityName) {
+  const now = new Date();
+  const sunTimes = getSunTimes(cityName, now);
+  const { sunrise, sunset, nextSunrise, dayLength, nightLength } = sunTimes;
+
+  const dayHourLen = dayLength / 12;
+  const nightHourLen = nightLength / 12;
+
+  const dayOfWeek = now.getDay();
+  const startIdx = DAY_START_PLANET[dayOfWeek];
+
+  const hours = [];
+
+  // ─── Gündüz 12 Saati ─────────────────────────────────
+  for (let i = 0; i < 12; i++) {
+    const planetKey = PLANET_ORDER[(startIdx + i) % 7];
+    const start = new Date(sunrise.getTime() + i * dayHourLen);
+    const end = new Date(sunrise.getTime() + (i + 1) * dayHourLen);
+    const isActive = now >= start && now < end;
+    const isPast = now >= end;
+    hours.push({ planetKey, start, end, isActive, isPast, isNight: false, hourIndex: i });
+  }
+
+  // ─── Gece 12 Saati ───────────────────────────────────
+  // Gece saatleri, gündüz bitiminden (12. saat) devam eder
+  for (let i = 0; i < 12; i++) {
+    const planetKey = PLANET_ORDER[(startIdx + 12 + i) % 7];
+    const start = new Date(sunset.getTime() + i * nightHourLen);
+    const end = new Date(sunset.getTime() + (i + 1) * nightHourLen);
+    const isActive = now >= start && now < end;
+    const isPast = now >= end;
+    hours.push({ planetKey, start, end, isActive, isPast, isNight: true, hourIndex: 12 + i });
+  }
+
+  return { hours, now, sunrise, sunset, nextSunrise, dayHourLen, nightHourLen };
+}
+
+export function fmt(date) {
+  return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+}
 
 export const MOON_PHASES = [
   { 
