@@ -519,10 +519,18 @@ export default function GoldenHoursPage() {
   // Unlock penceresi: sadece [aktif-1, aktif, aktif+1]
   const activeHourIdx = schedule.hours.findIndex(h => h.isActive);
   const isHourLocked = (hourIndex) => {
+    // -----------------------------------------------------
+    // EMİRALP'E ÖZEL KİLİTSİZ MOD (Tüm saatler görünür)
+    // Eski kilitli hale dönmek için bu fonksiyonu alttakiyle değiştir
+    return false; 
+    
+    /* ESKİ KİLİT MANTIĞI:
     if (activeHourIdx < 0) return false;
     if (hourIndex < activeHourIdx - 1) return 'past';    // geçmiş — kilitli
     if (hourIndex > activeHourIdx + 1) return 'future';  // gelecek — kilitli
     return false; // açık pencere
+    */
+    // -----------------------------------------------------
   };
 
   return (
